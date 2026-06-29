@@ -236,8 +236,10 @@ def get_recording(rec_id: str) -> dict:
 
 import re as _re
 
-# Matches "[Speaker 1]", "[Speaker 2]", "> [Speaker 1]", etc.
-_SPEAKER_LINE_RE = _re.compile(r"^(?:>\s*)?\[Speaker\s+(\d+)\]")
+# Matches "[Speaker 1]", "[朱一凡]", "> [Speaker 1]", etc. — any [name] tag
+# at the start of a line (after optional "> " blockquote prefix).
+# Negative lookahead (?!\\() avoids matching markdown links like [text](url).
+_SPEAKER_LINE_RE = _re.compile(r'^(?:>\s*)?\[([^\]]+)\](?!\()')
 
 
 def parse_transcript(content: str) -> dict:
@@ -280,13 +282,13 @@ def parse_transcript(content: str) -> dict:
         cleaned.append(s)
 
     text = "\n".join(cleaned).strip()
-    # Count distinct speaker numbers.
-    speaker_nums = set()
+    # Count distinct speakers (names or numbers).
+    speaker_labels = set()
     for line in body_lines:
         m = _SPEAKER_LINE_RE.match(line.strip())
         if m:
-            speaker_nums.add(m.group(1))
-    return {"text": text, "speakers": len(speaker_nums), "had_preamble": had_preamble}
+            speaker_labels.add(m.group(1))
+    return {"text": text, "speakers": len(speaker_labels), "had_preamble": had_preamble}
 
 
 def get_mp3_url(rec_id: str) -> str | None:
@@ -344,6 +346,63 @@ def get_user_info() -> dict:
         "country": user.get("country"),
         "membership_type": (data.get("data_state") or {}).get("membership_type", "unknown"),
     }
+
+
+# ── Transcription trigger ───────────────────────────────────────────
+
+def trigger_transcription(
+    rec_id: str,
+    *,
+    language: str = "auto",
+    diarization: bool = True,
+    llm: str = "auto",
+    timezone_offset: int | None = None,
+) -> dict:
+    """Trigger Plaud cloud transcription + summary for a recording.
+
+    Two-step (reverse-engineered from the Plaud web app via CDP capture):
+      1. PATCH /file/<id> — set the tranConfig (language, diarization, model)
+      2. POST  /ai/transsumm/<id> — fire the transcription + summary task
+
+    Both use the same consumer API (api.plaud.ai) + Bearer token as everything else.
+    Returns the POST response from step 2.
+    """
+    if timezone_offset is None:
+        # Local UTC offset in hours (e.g. -4 for US Eastern Daylight Time).
+        offset = datetime.now(timezone.utc).astimezone().utcoffset()
+        timezone_offset = int(offset.total_seconds() / 3600)
+
+    # Step 1: set transcription config on the file record.
+    config = {
+        "extra_data": {
+            "tranConfig": {
+                "language": language,
+                "type_type": "system",
+                "type": "AUTO-SELECT",
+                "diarization": 1 if diarization else 0,
+                "llm": llm,
+            }
+        }
+    }
+    _api_request(f"/file/{rec_id}", method="PATCH", body=json.dumps(config))
+
+    # Step 2: trigger transcription + summary task.
+    info = json.dumps({
+        "language": language,
+        "diarization": 1 if diarization else 0,
+        "llm": llm,
+        "timezone": timezone_offset,
+    })
+    trigger = {
+        "is_reload": 0,
+        "summ_type": "AUTO-SELECT",
+        "summ_type_type": "system",
+        "info": info,
+        "support_mul_summ": True,
+    }
+    return _api_request(
+        f"/ai/transsumm/{rec_id}", method="POST", body=json.dumps(trigger)
+    )
 
 
 # ── CLI smoke-test entry: python -m plaud_sync <list|info> ───────────

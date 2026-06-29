@@ -112,9 +112,18 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
     recorded_at = _recording_recorded_at_epoch_ms(rec)
     duration_s = _recording_duration_s(rec)
 
-    # If Plaud hasn't transcribed yet, skip gracefully (leave DISCOVERED for retry).
+    # If Plaud hasn't transcribed yet, auto-trigger it (same consumer API).
+    # The transcript won't be ready this run — next sync picks it up.
     if not rec.get("is_trans"):
-        return "SKIP:not-yet-transcribed"
+        if dry_run:
+            return "would trigger cloud transcription (not yet transcribed)"
+        try:
+            print(f"  [{plaud_id}] triggering cloud transcription...")
+            plaud_sync.trigger_transcription(plaud_id)
+            return "SKIP:triggered-cloud-transcription-retry-next-sync"
+        except Exception as e:
+            print(f"  [{plaud_id}] trigger failed ({e}), skipping")
+            return "SKIP:trigger-failed"
 
     state_mod.set_state(state, plaud_id, "TRANSCRIBING",
                         path_chosen="short", transcript_source="plaud-cloud")
