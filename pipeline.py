@@ -102,10 +102,11 @@ def _recording_summary(rec: dict, path_decision: str) -> str:
 
 
 def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> str:
-    """Process a short recording via Plaud cloud transcript → Obsmem/raw/.
+    """Process a short recording: append one bullet to the week's raw file.
 
+    No per-recording file, no LLM classification (that's the digest pass's job).
+    Matches the existing Obsmem/raw/YYYY-W##.md convention: one bullet per clip.
     Returns a status string. Writes nothing if dry_run.
-    Raises if transcription is genuinely missing or the API fails.
     """
     plaud_id = rec["id"]
     recorded_at = _recording_recorded_at_epoch_ms(rec)
@@ -122,41 +123,23 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
     if not raw_transcript.strip():
         return "SKIP:no-inline-transcript"
 
-    # Clean the transcript (strip Plaud's summary preamble, extract speaker tags).
     parsed = plaud_sync.parse_transcript(raw_transcript)
     transcript_text = parsed["text"]
+    if not transcript_text:
+        return "SKIP:empty-transcript-after-parse"
 
+    weekly_path = routing.weekly_target_path(
+        _vault(cfg), cfg["vault"]["memo_raw_folder"], recorded_at
+    )
     if dry_run:
-        return f"would write short memo ({len(transcript_text)} chars, {parsed['speakers']} speaker(s))"
+        return f"would append to {weekly_path.name} ({len(transcript_text)} chars, {parsed['speakers']} speaker(s))"
 
-    # 2. Classify sub-type + project.
-    projects = routing.load_projects(cfg["projects_registry"])
-    classification = classify.classify_short(
-        transcript_text, rec, projects,
-        secrets_source=cfg["secrets_source"],
-        temperature=cfg["llm"].get("temperature_classify", 0.0),
+    # Append the bullet (no classification — digest pass handles that later).
+    bullet = note_templates.append_clip_to_weekly(
+        weekly_path, recorded_at, transcript_text
     )
-    # Merge speaker count from transcript into classification metadata.
-    classification["speakers"] = parsed["speakers"]
-    classification["language"] = (detail.get("tran_config") or {}).get("language")
 
-    # 3. Render + write note.
-    target = routing.short_target_path(
-        _vault(cfg), cfg["vault"]["memo_raw_folder"], recorded_at, plaud_id
-    )
-    md = note_templates.render_short_memo(
-        plaud_id=plaud_id,
-        recorded_at_epoch_ms=recorded_at,
-        duration_s=duration_s,
-        transcript=transcript_text,
-        sub_type=classification["sub_type"],
-        project=classification["project"],
-        plaud_title=rec.get("filename"),
-        unreviewed_tag=cfg["vault"].get("unreviewed_tag", "unreviewed"),
-    )
-    _atomic_write(target, md)
-
-    # 4. Archive audio.
+    # Archive audio (non-fatal on failure — the bullet is already written).
     audio_dest = routing.audio_archive_path(
         cfg["audio_archive"]["root"], plaud_id, recorded_at, "mp3"
     )
@@ -171,11 +154,10 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
 
     state_mod.set_state(
         state, plaud_id, "ROUTED",
-        vault_path=str(target.relative_to(_vault(cfg)).with_suffix("")),
+        vault_path=str(weekly_path.relative_to(_vault(cfg)).with_suffix("")),
         archive_path=str(audio_dest),
-        classification=classification,
     )
-    return f"→ {target.relative_to(_vault(cfg))}  [{classification['sub_type']}]"
+    return f"→ {weekly_path.relative_to(_vault(cfg))}  [{len(transcript_text)} chars]"
 
 
 def process_long(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> str:

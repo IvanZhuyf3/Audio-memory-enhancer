@@ -35,16 +35,19 @@ def _local_dt(epoch_ms: int) -> datetime:
     return datetime.fromtimestamp(epoch_ms / 1000, tz=timezone.utc).astimezone()
 
 
-def short_target_path(
+def weekly_target_path(
     vault_root: str | Path,
     memo_raw_folder: str,
     recorded_at_epoch_ms: int,
-    plaud_id: str,
 ) -> Path:
-    """Obsmem/raw/<YYYY-MM-DD_HHhMM>_<plaud_id>.md — sortable + unique via plaud_id."""
+    """Obsmem/raw/<YYYY>-W<##>.md — ISO-week file, matching the existing vault convention.
+
+    Recordings from the same week append to the same file (one bullet per clip).
+    Uses ISO 8601 week numbering so the year boundary is handled correctly.
+    """
     dt = _local_dt(recorded_at_epoch_ms)
-    stamp = dt.strftime("%Y-%m-%d_%Hh%M")
-    name = f"{stamp}_{plaud_id}.md"
+    iso_year, iso_week, _ = dt.isocalendar()
+    name = f"{iso_year}-W{iso_week:02d}.md"
     return Path(vault_root) / memo_raw_folder / name
 
 
@@ -144,8 +147,8 @@ if __name__ == "__main__":
     print("decide_path(1800, 15):", decide_path(1800, 15))  # 30min → long
     print("decide_path(600, 15):", decide_path(600, 15))    # 10min → short
     print(
-        "short_target:",
-        short_target_path("VAULT", "Obsmem/raw", 1751110200000, "abc123"),
+        "weekly_target:",
+        weekly_target_path("VAULT", "Obsmem/raw", 1751110200000),
     )
     print(
         "long_target:",
