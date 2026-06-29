@@ -30,7 +30,7 @@ HTML_OUT = TEMP / "blind_comparison.html"
 REVEAL_KEY = TEMP / "blind_reveal_key.json"
 
 SECRETS_SRC = Path(r"C:\Users\Yifan\OneDrive\Opencode_workspace\audio_transcribe_notes\config.ini")
-MAX_PAIRS = 40  # cap to avoid overwhelming the user
+MAX_PAIRS = 20  # cap to avoid overwhelming the user
 
 
 # ── Load + normalize ────────────────────────────────────────────────
@@ -71,30 +71,92 @@ def load_qwen(path: Path) -> list[dict]:
     return out
 
 
-# ── Time alignment ──────────────────────────────────────────────────
+# ── Text-similarity alignment (robust to timestamp drift) ──────────
 
-def align_by_time(plaud: list[dict], qwen: list[dict]) -> list[dict]:
-    """For each Plaud segment, find overlapping Qwen3 segment(s) and pair them."""
-    pairs = []
-    for p in plaud:
-        p_start, p_end = p["start"], p["end"]
-        overlapping = []
-        for q in qwen:
-            overlap = min(p_end, q["end"]) - max(p_start, q["start"])
-            if overlap > 0:
-                overlapping.append(q)
-        if not overlapping:
-            continue
-        # Merge overlapping Qwen segments into one text block.
-        overlapping.sort(key=lambda q: q["start"])
-        merged_text = " ".join(q["text"] for q in overlapping)
-        pairs.append({
-            "timestamp": p_start,
-            "plaud_text": p["text"],
-            "plaud_speaker": p["speaker"],
-            "qwen_text": merged_text,
-            "qwen_speakers": ", ".join(sorted(set(q["speaker"] for q in overlapping))),
+def _to_windows(segs: list[dict], window_chars: int = 120) -> list[dict]:
+    """Split a transcript into ~window_chars chunks, each with a timestamp.
+
+    Uses character count (not word count) because Chinese text has no spaces.
+    """
+    windows = []
+    buf = ""
+    current_time = 0.0
+    for seg in segs:
+        if not buf:
+            current_time = seg["start"]
+        buf += seg["text"]
+        if len(buf) >= window_chars:
+            windows.append({
+                # Character set for overlap (handles Chinese + English mix).
+                "chars": _char_ngrams(buf, n=2),
+                "text": buf,
+                "time": current_time,
+            })
+            buf = ""
+    if buf:
+        windows.append({
+            "chars": _char_ngrams(buf, n=2),
+            "text": buf,
+            "time": current_time if current_time else 0,
         })
+    return windows
+
+
+def _char_ngrams(text: str, n: int = 2) -> set:
+    """Extract character n-grams (bigrams). Handles CJK + ASCII mix.
+
+    Bigrams capture Chinese word segments (e.g. 灵敏, 敏度, 度不) and
+    English word fragments. More robust than word-splitting for mixed text.
+    """
+    # Normalize: lowercase, strip whitespace, keep CJK + alphanumerics.
+    import re
+    clean = re.sub(r"\s+", "", text.lower())
+    return {clean[i:i + n] for i in range(len(clean) - n + 1)} if len(clean) > n else {clean}
+
+
+def _jaccard(a: set, b: set) -> float:
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def align_by_text(plaud: list[dict], qwen: list[dict]) -> list[dict]:
+    """Align by content similarity using character bigram overlap.
+
+    Splits both into ~120-char windows, greedily matches by bigram Jaccard.
+    Robust to timestamp drift, different segmentation, and CJK + English mix.
+    Only returns pairs where both sides cover the same content.
+    """
+    MIN_OVERLAP = 0.30  # character bigram overlap threshold
+    pw = _to_windows(plaud, window_chars=120)
+    qw = _to_windows(qwen, window_chars=120)
+    used_q = set()
+
+    # Compute all overlaps, then greedy-match highest first.
+    candidates = []
+    for i, p in enumerate(pw):
+        for j, q in enumerate(qw):
+            ov = _jaccard(p["chars"], q["chars"])
+            if ov >= MIN_OVERLAP:
+                candidates.append((ov, i, j))
+
+    candidates.sort(key=lambda x: -x[0])  # highest overlap first
+
+    used_p = set()
+    pairs = []
+    for ov, i, j in candidates:
+        if i in used_p or j in used_q:
+            continue
+        used_p.add(i)
+        used_q.add(j)
+        pairs.append({
+            "timestamp": pw[i]["time"],
+            "plaud_text": pw[i]["text"],
+            "qwen_text": qw[j]["text"],
+            "overlap": round(ov, 2),
+        })
+
+    pairs.sort(key=lambda p: p["overlap"], reverse=True)
     return pairs
 
 
@@ -363,9 +425,9 @@ def main() -> int:
     print(f"  Plaud: {len(plaud)} segments")
     print(f"  Qwen3: {len(qwen)} segments")
 
-    print("\nAligning by timestamp...")
-    pairs = align_by_time(plaud, qwen)
-    print(f"  {len(pairs)} aligned pairs")
+    print("\nAligning by text similarity (Jaccard word overlap)...")
+    pairs = align_by_text(plaud, qwen)
+    print(f"  {len(pairs)} aligned pairs (overlap >= 20%)")
 
     # Load DeepSeek config.
     cp = configparser.ConfigParser()

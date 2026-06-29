@@ -26,7 +26,7 @@ transcription:
   # Duration split: <threshold → Plaud cloud transcript (short path);
   # >=threshold → local Qwen3-ASR (long path).
   short_threshold_min: 15
-  language: auto              # auto | en | zh | ja | ko | fr | de | es
+  language: zh                # zh | en | auto — force Chinese to avoid code-switching confusion
   qwen_model: Qwen/Qwen3-ASR-1.7B
   device: cuda                # cuda | cpu
   forced_aligner: Qwen/Qwen3-ForcedAligner-0.6B

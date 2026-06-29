@@ -71,7 +71,7 @@ def main() -> int:
     print(f"[asr_test] Starting Qwen3-ASR transcription ({duration_min:.1f} min audio)...")
     result = transcribe_local.transcribe(
         audio_path,
-        language="auto",
+        language="zh",  # force Chinese to avoid code-switching confusion
         qwen_model="Qwen/Qwen3-ASR-1.7B",
         forced_aligner="Qwen/Qwen3-ForcedAligner-0.6B",
         device="cuda",
