@@ -163,20 +163,99 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
 def process_long(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> str:
     """Process a long recording via local Qwen3-ASR → Meeting Notes/.
 
-    Phase 3 module — transcribe_local.transcribe() is currently a stub.
+    Downloads audio, acquires the GPU lock, transcribes with diarization,
+    classifies (project + theme + summary + action items), writes the note,
+    and archives the audio.
     """
     plaud_id = rec["id"]
     recorded_at = _recording_recorded_at_epoch_ms(rec)
     duration_s = _recording_duration_s(rec)
 
     if dry_run:
-        return f"would transcribe locally ({duration_s/60:.1f}m → Meeting Notes/) [Phase 3]"
+        return f"would transcribe locally ({duration_s/60:.1f}m → Meeting Notes/)"
 
-    # Phase 3: download audio → transcribe_local.transcribe() → classify_long → render.
-    raise NotImplementedError(
-        f"Long-recording path is Phase 3 work. Recording {plaud_id} "
-        f"({duration_s/60:.1f} min) skipped. Run with --dry-run to see decisions."
+    project_root = Path(__file__).parent
+    cache_dir = project_root / "cache"
+    cache_dir.mkdir(exist_ok=True)
+    audio_path = cache_dir / f"{plaud_id}.mp3"
+
+    # 1. Download audio (reuse cache if present).
+    state_mod.set_state(state, plaud_id, "DOWNLOADING",
+                        path_chosen="long", transcript_source="local-qwen3-asr")
+    if not audio_path.exists():
+        print(f"  [{plaud_id}] downloading audio...")
+        plaud_sync.download_audio(plaud_id, audio_path)
+
+    # 2. Transcribe (GPU lock + ASR + diarization + AI clean).
+    state_mod.set_state(state, plaud_id, "TRANSCRIBING")
+    secrets = load_secrets(cfg)
+    tcfg = cfg["transcription"]
+    result = transcribe_local.transcribe(
+        audio_path,
+        language=tcfg.get("language", "auto"),
+        qwen_model=tcfg.get("qwen_model", "Qwen/Qwen3-ASR-1.7B"),
+        forced_aligner=tcfg.get("forced_aligner", "Qwen/Qwen3-ForcedAligner-0.6B"),
+        device=tcfg.get("device", "cuda"),
+        hf_token=secrets["hf_token"],
+        deepseek_api_key=secrets["deepseek_api_key"],
+        deepseek_model=secrets["deepseek_model"],
+        dictionary_path=project_root / "dictionary.md",
+        gpu_lock=cfg.get("gpu_lock"),
+        gpu_lock_timeout_s=cfg.get("gpu_lock_timeout_s", 3600),
+        log_dir=cache_dir,
     )
+
+    if not result["segments"]:
+        raise RuntimeError("transcription produced no segments")
+
+    # 3. Classify (project + theme + summary + action items).
+    projects = routing.load_projects(cfg["projects_registry"])
+    classification = classify.classify_long(
+        result["transcript_text"], rec, projects,
+        secrets_source=cfg["secrets_source"],
+        temperature=cfg["llm"].get("temperature_classify", 0.0),
+    )
+
+    # 4. Render + write note.
+    target = routing.long_target_path(
+        _vault(cfg), cfg["vault"]["meeting_notes_folder"], recorded_at,
+        classification["theme"],
+    )
+    md = note_templates.render_long_meeting(
+        plaud_id=plaud_id,
+        recorded_at_epoch_ms=recorded_at,
+        duration_s=duration_s,
+        theme=classification["theme"],
+        transcript_markdown=result["transcript_markdown"],
+        summary=classification["summary"],
+        action_items=classification["action_items"],
+        project=classification["project"],
+        speakers=result["speakers"] or None,
+        unreviewed_tag=cfg["vault"].get("unreviewed_tag", "unreviewed"),
+    )
+    _atomic_write(target, md)
+
+    # 5. Archive audio.
+    audio_dest = routing.audio_archive_path(
+        cfg["audio_archive"]["root"], plaud_id, recorded_at, "mp3"
+    )
+    try:
+        routing.move_to_archive(audio_path, audio_dest)
+    except Exception as e:
+        print(f"  [{plaud_id}] audio archive skipped: {e}")
+
+    # 6. Update state.
+    state_mod.set_state(
+        state, plaud_id, "ROUTED",
+        vault_path=str(target.relative_to(_vault(cfg)).with_suffix("")),
+        archive_path=str(audio_dest),
+        classification=classification,
+        speakers=result["speakers"],
+        language=result.get("language"),
+    )
+    rel = target.relative_to(_vault(cfg))
+    proj = f" [{classification['project']}]" if classification.get("project") else ""
+    return f"→ {rel}  ({len(result['segments'])} segs, {result['speakers']} speakers){proj}"
 
 
 # ── Main sync ───────────────────────────────────────────────────────
