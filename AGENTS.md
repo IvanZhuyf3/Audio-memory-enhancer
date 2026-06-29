@@ -69,7 +69,7 @@ file's directory (not CWD). This was a bug once — bootstrap-projects wrote
 | `routing.py` | Duration split, vault target paths, audio archive, project registry (yaml load/save/bootstrap). | Working |
 | `classify.py` | DeepSeek classifiers. `classify_short` (sub-type), `classify_long` (project+theme+summary+actions). | Working (short proven, long untested) |
 | `note_templates.py` | Markdown + frontmatter builders for memos + meetings. Pure string templating. | Working |
-| `transcribe_local.py` | Phase 3 stub. Port `run_qwen3_asr()` from audio_transcribe_notes/transcribe.py. | **Stub** |
+| `transcribe_local.py` | Local Qwen3-ASR pipeline (ported from audio_transcribe_notes). GPU lock + diarization + AI clean. | Working (Phase 3, validated on GPU) |
 
 ## Plaud API (reverse-engineered) — VERIFIED against real data
 
@@ -149,24 +149,39 @@ DISCOVERED → DOWNLOADING → TRANSCRIBING → ROUTED → DONE
 }
 ```
 
-## Phase 3 Port Checklist (transcribe_local.py)
+## Phase 3 — done (validated on GPU)
 
-When implementing the long-recording path, port these from
+`transcribe_local.py` ports the proven ASR pipeline from
 `audio_transcribe_notes/transcribe.py`:
-- `_vad_split()` — silero-vad chunking for >180s audio
-- `_build_sentence_segments()` — char-level timestamp → sentence segments
-- `_assign_speakers()` — map pyannote turns to segments
-- `_map_language()` — CLI codes → Qwen3 full names
-- `run_qwen3_asr()` — the full ASR + diarization pipeline
-- `ai_clean()` + `load_dictionary()` + `_append_new_terms()` — DeepSeek correction
-- `format_timestamp()` — seconds → HH:MM:SS
 
-Adapt to emit segments that `note_templates.render_long_meeting()` consumes
-(`transcript_markdown` via `transcribe_local.segments_to_markdown()`).
+- `_vad_split` — silero-vad chunking for audio >180s (ForcedAligner limit)
+- `_build_sentence_segments` — char-level timestamps → sentence segments
+- `_assign_speakers` — pyannote diarization → speaker labels
+- `_run_asr` — Qwen3-ASR + ForcedAligner, per-chunk 10min timeout, chunk log
+- `ai_clean` — DeepSeek dictionary correction (operates on segments directly)
+- `transcribe()` — main entry, returns `{segments, transcript_markdown, transcript_text, speakers, language}`
 
-**GPU coordination**: acquire the file lock at `config.gpu_lock` before loading
-models, to serialize against `audio_transcribe_notes/monitor.py`. Release in a
-`finally` block. The short path does NOT need the lock (no GPU).
+### GPU lock (GpuLock class)
+
+File-based cross-process lock at `config.gpu_lock` (`C:/Users/Yifan/venvs/.gpu_lock`).
+Uses `O_CREAT | O_EXCL` for atomic creation + PID-in-file for stale-lock recovery.
+Acquired around the ASR + diarization phase only (not the whole pipeline).
+**Purpose**: serialize against `audio_transcribe_notes/monitor.py` so two Qwen3-ASR
+jobs never contend for GPU memory. Short path (no GPU) does NOT acquire it.
+
+### torchcodec warnings are benign
+
+pyannote emits `Could not load libtorchcodec` warnings on every run. These are
+harmless — audio is passed as an in-memory `{'waveform': tensor, 'sample_rate': int}`
+dict, so pyannote never needs torchcodec's FFmpeg decoder. Don't waste time
+"fixing" this.
+
+### Long-path validation result
+
+Tested by forcing the 0.7-min test clip through the long path (threshold→0):
+GPU lock acquired/released ✓, Qwen3-ASR produced 12 segments ✓, pyannote found
+1 speaker ✓, DeepSeek classify_long generated theme + summary ✓, note written
+to Meeting Notes/ ✓. The torchcodec warning appeared but did not affect output.
 
 ## Design Decisions (locked with user)
 

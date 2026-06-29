@@ -134,9 +134,9 @@ Phase 5's digest pass will consolidate `Obsmem/raw/` → `Obsmem/digest/`.
 | Phase | Status |
 |---|---|
 | 1 — Skeleton + Plaud cloud sync + dry-run | ✅ Done |
-| 2 — Short-memo path end-to-end | ✅ Wired (untested with real data) |
-| 3 — Long-recording path (port Qwen3-ASR) | ⏳ `transcribe_local.py` is a stub |
-| 4 — Polish (reprocess, inbox dashboard, Task Scheduler docs) | ⏳ Partial |
+| 2 — Short-memo path (weekly raw files) | ✅ Done + validated |
+| 3 — Long-recording path (local Qwen3-ASR) | ✅ Done + validated on GPU |
+| 4 — Polish (Task Scheduler docs, etc.) | ⏳ Partial |
 | 5 — Digest pass + opencode skill wrapper | ⏳ Deferred |
 
 ## Architecture
@@ -148,7 +148,7 @@ Phase 5's digest pass will consolidate `Obsmem/raw/` → `Obsmem/digest/`.
 - `routing.py` — Duration split, vault target paths, audio archive, project registry.
 - `classify.py` — DeepSeek classifiers (short sub-type + long project/theme/summary).
 - `note_templates.py` — Markdown + frontmatter builders.
-- `transcribe_local.py` — Phase 3: local Qwen3-ASR (stub until ported).
+- `transcribe_local.py` — Phase 3: local Qwen3-ASR + diarization + AI clean + GPU lock.
 
 See `AGENTS.md` for the architectural deep-dive.
 
