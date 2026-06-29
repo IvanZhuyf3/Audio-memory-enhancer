@@ -285,7 +285,8 @@ function save() {{
 
 def reveal(results_path: Path, reveal_key: list[dict]) -> int:
     """Read user picks + reveal key, tally winners."""
-    picks = json.loads(results_path.read_text(encoding="utf-8"))
+    # utf-8-sig strips BOM if present (PowerShell/tools sometimes add it).
+    picks = json.loads(results_path.read_text(encoding="utf-8-sig"))
     key_map = {k["pair"]: k for k in reveal_key}
 
     plaud_wins, qwen_wins, ties = 0, 0, 0
