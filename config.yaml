@@ -1,0 +1,63 @@
+# Audio-memory-enhancer pipeline configuration.
+# Edit paths and thresholds to match your environment.
+# Secrets (DeepSeek key, HF token) are READ from audio_transcribe_notes/config.ini
+# to avoid duplicating them here. Plaud credentials live in ~/.plaud/config.json
+# (managed by `plaud login` in the upstream plaud-toolkit).
+
+plaud:
+  # Path to the upstream plaud-toolkit repo (used only for the one-time `plaud login`
+  # interactive step; after that this Python project calls the Plaud API directly).
+  upstream_path: C:/Users/Yifan/OneDrive/Opencode_workspace/Plaud-toolkit
+  region: us                  # us | eu  (must match what you enter at `plaud login`)
+  # Plaud config file written by `plaud login`:
+  config_file: C:/Users/Yifan/.plaud/config.json
+  # Token refresh buffer (days). Mirrors upstream's 30-day auto-refresh.
+  token_refresh_buffer_days: 30
+
+vault:
+  root: C:/Users/Yifan/Documents/Obsidian/Yifan_Obsidian
+  meeting_notes_folder: Meeting Notes
+  memo_raw_folder: Obsmem/raw        # short memos land here (intake)
+  memo_digest_folder: Obsmem/digest  # Phase 5 (deferred)
+  projects_folder: Projects
+  unreviewed_tag: unreviewed
+
+transcription:
+  # Duration split: <threshold → Plaud cloud transcript (short path);
+  # >=threshold → local Qwen3-ASR (long path).
+  short_threshold_min: 15
+  language: auto              # auto | en | zh | ja | ko | fr | de | es
+  qwen_model: Qwen/Qwen3-ASR-1.7B
+  device: cuda                # cuda | cpu
+  forced_aligner: Qwen/Qwen3-ForcedAligner-0.6B
+
+audio_archive:
+  root: E:/Audio-arxiv
+  layout: by_month            # by_month → <YYYY-MM>/<plaud_id>.<ext>
+
+llm:
+  provider: deepseek
+  model: deepseek-v4-flash    # verify still current at first run
+  temperature_classify: 0.0
+  temperature_theme: 0.3
+
+# Source of secrets (read-only). Reuses the existing audio_transcribe_notes config.
+secrets_source: C:/Users/Yifan/OneDrive/Opencode_workspace/audio_transcribe_notes/config.ini
+
+# Project registry (hand-edited; bootstrap-projects command scans vault to refresh).
+projects_registry: projects.yaml
+
+# GPU coordination: file lock shared with audio_transcribe_notes monitor.py
+# so the two pipelines never run Qwen3-ASR concurrently.
+gpu_lock: C:/Users/Yifan/venvs/.gpu_lock
+gpu_lock_timeout_s: 3600      # wait up to 1h for the GPU to free up
+
+# Reference cadence; actual trigger set in Windows Task Scheduler.
+poll_interval_min: 30
+
+# State file (gitignored).
+state_file: state.json
+
+# Cleanup
+prune_done_after_days: 60     # remove DONE entries from state.json after N days
+max_retries: 3

@@ -1,0 +1,29 @@
+# State + caches (per-run, not shared)
+state.json
+state.tmp
+cache/
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# Test artifacts
+test/fixtures/*.m4a
+test/fixtures/*.mp3
+test/fixtures/*.wav
+test/fixtures/*.opus
+test/output/
+
+# Secrets (never commit)
+config.local.yaml
+config.local.ini
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
