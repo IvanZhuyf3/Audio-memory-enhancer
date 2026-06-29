@@ -205,18 +205,88 @@ def list_recordings(region: str | None = None) -> list[dict]:
 
 
 def get_recording(rec_id: str) -> dict:
-    """Full recording detail with transcript extracted from pre_download_content_list."""
+    """Full recording detail with transcript + metadata extracted.
+
+    Returns the raw detail dict plus:
+        id, filename, transcript (raw data_content — use parse_transcript()
+        to clean it), content_list (S3 data-links for raw/polish/outline/summary),
+        tran_config (language/diarization/llm from extra_data).
+    """
     data = _api_request(f"/file/detail/{rec_id}")
     raw = data.get("data") or data
+
+    # Inline content: for short recordings Plaud inlines the raw transcript
+    # inside an auto_sum preamble. For longer recordings this is the AI summary.
+    # Use the longest data_content as the inline transcript (matches upstream).
     transcript = ""
     for item in raw.get("pre_download_content_list") or []:
         content = item.get("data_content") or ""
         if len(content) > len(transcript):
             transcript = content
+
     raw["id"] = raw.get("file_id") or rec_id
     raw["filename"] = raw.get("file_name") or raw.get("filename") or rec_id
     raw["transcript"] = transcript
+    raw["content_list"] = raw.get("content_list") or []
+    raw["tran_config"] = (raw.get("extra_data") or {}).get("tranConfig") or {}
     return raw
+
+
+# ── Transcript parsing ──────────────────────────────────────────────
+
+import re as _re
+
+# Matches "[Speaker 1]", "[Speaker 2]", "> [Speaker 1]", etc.
+_SPEAKER_LINE_RE = _re.compile(r"^(?:>\s*)?\[Speaker\s+(\d+)\]")
+
+
+def parse_transcript(content: str) -> dict:
+    """Clean a Plaud inline transcript.
+
+    Short-recording summaries start with a preamble like
+    "转写内容较短，无需生成总结。音频转写原文如下：" followed by
+    "[Speaker N] ..." lines. This extracts just the speaker-tagged portion.
+
+    Returns {text, speakers, had_preamble}:
+        text       — cleaned transcript (speaker-tagged lines, preamble stripped)
+        speakers   — count of distinct speakers (0 if none tagged)
+        had_preamble — True if a preamble was detected and stripped
+    """
+    if not content or not content.strip():
+        return {"text": "", "speakers": 0, "had_preamble": False}
+
+    lines = content.split("\n")
+    # Find the first line that starts with a [Speaker N] marker.
+    first_speaker_idx = None
+    for i, line in enumerate(lines):
+        if _SPEAKER_LINE_RE.match(line.strip()):
+            first_speaker_idx = i
+            break
+
+    if first_speaker_idx is None:
+        # No speaker markers — return the content as-is (likely a pure summary).
+        return {"text": content.strip(), "speakers": 0, "had_preamble": False}
+
+    had_preamble = first_speaker_idx > 0
+    body_lines = lines[first_speaker_idx:]
+    # Strip leading "> " blockquote markers (Plaud wraps transcript lines).
+    cleaned = []
+    for line in body_lines:
+        s = line.strip()
+        m = _SPEAKER_LINE_RE.match(s)
+        if m:
+            # Normalize: remove "> " prefix, keep "[Speaker N]" + text.
+            s = _re.sub(r"^(?:>\s*)", "", line).rstrip()
+        cleaned.append(s)
+
+    text = "\n".join(cleaned).strip()
+    # Count distinct speaker numbers.
+    speaker_nums = set()
+    for line in body_lines:
+        m = _SPEAKER_LINE_RE.match(line.strip())
+        if m:
+            speaker_nums.add(m.group(1))
+    return {"text": text, "speakers": len(speaker_nums), "had_preamble": had_preamble}
 
 
 def get_mp3_url(rec_id: str) -> str | None:

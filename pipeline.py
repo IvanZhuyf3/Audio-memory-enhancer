@@ -105,30 +105,40 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
     """Process a short recording via Plaud cloud transcript → Obsmem/raw/.
 
     Returns a status string. Writes nothing if dry_run.
+    Raises if transcription is genuinely missing or the API fails.
     """
     plaud_id = rec["id"]
     recorded_at = _recording_recorded_at_epoch_ms(rec)
     duration_s = _recording_duration_s(rec)
 
-    # 1. Fetch cloud transcript + full detail.
+    # If Plaud hasn't transcribed yet, skip gracefully (leave DISCOVERED for retry).
+    if not rec.get("is_trans"):
+        return "SKIP:not-yet-transcribed"
+
     state_mod.set_state(state, plaud_id, "TRANSCRIBING",
                         path_chosen="short", transcript_source="plaud-cloud")
     detail = plaud_sync.get_recording(plaud_id)
-    transcript = detail.get("transcript") or ""
-    if not transcript.strip():
-        raise RuntimeError("no Plaud cloud transcript available (is_trans=False)")
+    raw_transcript = detail.get("transcript") or ""
+    if not raw_transcript.strip():
+        return "SKIP:no-inline-transcript"
+
+    # Clean the transcript (strip Plaud's summary preamble, extract speaker tags).
+    parsed = plaud_sync.parse_transcript(raw_transcript)
+    transcript_text = parsed["text"]
 
     if dry_run:
-        return f"would write short memo ({len(transcript)} chars transcript)"
+        return f"would write short memo ({len(transcript_text)} chars, {parsed['speakers']} speaker(s))"
 
     # 2. Classify sub-type + project.
     projects = routing.load_projects(cfg["projects_registry"])
-    secrets = load_secrets(cfg)
     classification = classify.classify_short(
-        transcript, rec, projects,
+        transcript_text, rec, projects,
         secrets_source=cfg["secrets_source"],
         temperature=cfg["llm"].get("temperature_classify", 0.0),
     )
+    # Merge speaker count from transcript into classification metadata.
+    classification["speakers"] = parsed["speakers"]
+    classification["language"] = (detail.get("tran_config") or {}).get("language")
 
     # 3. Render + write note.
     target = routing.short_target_path(
@@ -138,7 +148,7 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
         plaud_id=plaud_id,
         recorded_at_epoch_ms=recorded_at,
         duration_s=duration_s,
-        transcript=transcript,
+        transcript=transcript_text,
         sub_type=classification["sub_type"],
         project=classification["project"],
         plaud_title=rec.get("filename"),
@@ -151,9 +161,9 @@ def process_short(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> s
         cfg["audio_archive"]["root"], plaud_id, recorded_at, "mp3"
     )
     if not audio_dest.exists():
-        # Download then move. Skip on failure (non-fatal — note still written).
         try:
-            cache_path = Path(cfg.get("state_file", "state.json")).parent / "cache" / f"{plaud_id}.mp3"
+            cache_dir = Path(cfg["state_file"]).parent / "cache"
+            cache_path = cache_dir / f"{plaud_id}.mp3"
             plaud_sync.download_audio(plaud_id, cache_path)
             routing.move_to_archive(cache_path, audio_dest)
         except Exception as e:
@@ -250,14 +260,14 @@ def cmd_sync(args, cfg: dict) -> int:
 
     # Print plan (always — dry run or not).
     print()
-    print(f"{'ID':<28} {'Date':<17} {'Dur':>7}  {'Path':<5} {'Filename'}")
-    print("-" * 90)
+    print(f"{'ID':<34} {'Date':<17} {'Dur':>7}  {'Path':<5} {'Filename'}")
+    print("-" * 96)
     for rec in recordings:
         path_decision = routing.decide_path(
             _recording_duration_s(rec), threshold_min
         )
-        rid = (rec.get("id") or "")[:26]
-        print(f"{rid:<28} " + _recording_summary(rec, path_decision))
+        rid = rec.get("id") or ""
+        print(f"{rid:<34} " + _recording_summary(rec, path_decision))
     print()
 
     if args.dry_run:
@@ -271,7 +281,7 @@ def cmd_sync(args, cfg: dict) -> int:
         return 0
 
     # Process each.
-    ok, failed = 0, 0
+    ok, skipped, failed = 0, 0, 0
     for rec in recordings:
         plaud_id = rec["id"]
         duration_s = _recording_duration_s(rec)
@@ -281,9 +291,17 @@ def cmd_sync(args, cfg: dict) -> int:
                 msg = process_short(rec, cfg, state)
             else:
                 msg = process_long(rec, cfg, state)
-            print(f"  [ok] {plaud_id}: {msg}")
-            state_mod.set_state(state, plaud_id, "DONE")
-            ok += 1
+            # SKIP return → leave as DISCOVERED so next sync retries (no DONE).
+            if msg.startswith("SKIP:"):
+                reason = msg.split(":", 1)[1]
+                print(f"  [skip] {plaud_id}: {reason} (will retry next sync)")
+                # Reset to DISCOVERED so it's picked up again next time.
+                state_mod.set_state(state, plaud_id, "DISCOVERED")
+                skipped += 1
+            else:
+                print(f"  [ok] {plaud_id}: {msg}")
+                state_mod.set_state(state, plaud_id, "DONE")
+                ok += 1
         except Exception as e:
             print(f"  [FAIL] {plaud_id}: {e}")
             state_mod.mark_failed(state, plaud_id, str(e), cfg.get("max_retries", 3))
@@ -291,7 +309,7 @@ def cmd_sync(args, cfg: dict) -> int:
         # Persist after each recording (crash-safe progress).
         state_mod.save_state(state, state_path)
 
-    print(f"\n[sync] done: {ok} ok, {failed} failed")
+    print(f"\n[sync] done: {ok} ok, {skipped} skipped, {failed} failed")
     return 0 if failed == 0 else 2
 
 
@@ -305,13 +323,13 @@ def cmd_list(args, cfg: dict) -> int:
         return 1
     state = state_mod.load_state(cfg.get("state_file", "state.json"))
     threshold_min = cfg["transcription"]["short_threshold_min"]
-    print(f"{'ID':<28} {'State':<13} {'Date':<17} {'Dur':>7}  {'Path':<5} {'Filename'}")
-    print("-" * 100)
+    print(f"{'ID':<34} {'State':<13} {'Date':<17} {'Dur':>7}  {'Path':<5} {'Filename'}")
+    print("-" * 106)
     for rec in recordings:
         rid = rec.get("id", "")
         st = (state_mod.get_recording(state, rid) or {}).get("state", "new")
         path_decision = routing.decide_path(_recording_duration_s(rec), threshold_min)
-        print(f"{rid[:26]:<28} {st:<13} " + _recording_summary(rec, path_decision))
+        print(f"{rid:<34} {st:<13} " + _recording_summary(rec, path_decision))
     print(f"\n{len(recordings)} recording(s)")
     return 0
 

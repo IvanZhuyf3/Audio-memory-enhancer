@@ -78,13 +78,18 @@ def audio_archive_path(
 
 
 def move_to_archive(src_path: str | Path, archive_path: str | Path) -> Path:
-    """Move an audio file to its archive location. Returns the archive path."""
+    """Move an audio file to its archive location. Returns the archive path.
+
+    Uses shutil.move (not os.rename) because the archive is often on a different
+    drive (C: → E:) and rename fails across volumes with WinError 17.
+    """
+    import shutil
     src = Path(src_path)
     dst = Path(archive_path)
     dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.exists():
         dst.unlink()  # idempotent overwrite
-    src.rename(dst)
+    shutil.move(str(src), str(dst))
     return dst
 
 

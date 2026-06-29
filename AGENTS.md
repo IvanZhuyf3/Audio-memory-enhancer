@@ -71,15 +71,16 @@ file's directory (not CWD). This was a bug once — bootstrap-projects wrote
 | `note_templates.py` | Markdown + frontmatter builders for memos + meetings. Pure string templating. | Working |
 | `transcribe_local.py` | Phase 3 stub. Port `run_qwen3_asr()` from audio_transcribe_notes/transcribe.py. | **Stub** |
 
-## Plaud API (reverse-engineered)
+## Plaud API (reverse-engineered) — VERIFIED against real data
 
-Endpoints (from upstream `packages/core/src/client.ts`):
+Endpoints (from upstream `packages/core/src/client.ts`, confirmed working):
 - `POST /auth/access-token` — form-urlencoded login (username=email, password)
-- `GET /file/simple/web` → `data_file_list` (filter `is_trash=false`)
-- `GET /file/detail/<id>` → `data.pre_download_content_list[].data_content` (longest = transcript)
-- `GET /file/temp-url/<id>?is_opus=false` → pre-signed MP3 URL
-- `GET /file/download/<id>` → opus bytes (fallback)
-- `GET /user/me` → account info
+- `GET /file/simple/web` → `data_file_list` (filter `is_trash=false`). Each item
+  has full **32-char hex** `id` (e.g. `7f4baff36798c5038e1f969cae5aa804`).
+- `GET /file/detail/<id>` → `data` object with the fields below.
+- `GET /file/temp-url/<id>?is_opus=false` → pre-signed MP3 URL.
+- `GET /file/download/<id>` → opus bytes (fallback, rarely needed).
+- `GET /user/me` → account info.
 
 Base URLs: `us` → `https://api.plaud.ai`, `eu` → `https://api-euc1.plaud.ai`.
 **Browser User-Agent required** (default urllib UA gets 403). Region mismatch
@@ -88,6 +89,32 @@ returns `{status:-302, data:{domains:{api:"..."}}}` — handled in
 
 `duration` and `start_time` are **epoch-milliseconds** (not seconds). Common bug
 source — always divide by 1000.
+
+### Detail endpoint shape (verified)
+
+The `/file/detail/<id>` response `data` object contains:
+- `file_id`, `file_name`, `duration` (ms), `start_time` (epoch ms), `is_trash`
+- `pre_download_content_list[].data_content` — **inline content**. For SHORT
+  recordings Plaud inlines the raw transcript here inside an auto_sum preamble
+  (e.g. `转写内容较短，无需生成总结。音频转写原文如下：\n> [Speaker 1]...`). For
+  longer recordings this becomes the AI summary (raw transcript NOT inlined).
+  → Use `plaud_sync.parse_transcript()` to strip the preamble + extract the
+    `[Speaker N]`-tagged body. Returns `{text, speakers, had_preamble}`.
+- `content_list[]` — S3 pre-signed gzipped links, four types:
+  - `transaction` → `trans_result.json.gz` (raw transcript with segment timing)
+  - `outline` → `outline.json.gz`
+  - `transaction_polish` → polished/smoothed transcript
+  - `auto_sum_note` → `ai_content.md.gz` (AI summary)
+  These are the cleanest sources for the Phase 3 long path (fetch + gunzip + parse).
+- `extra_data.tranConfig` → `{language: "zh-0", diarization: 1, llm: "auto", ...}`
+  — valuable classification metadata.
+- `embeddings.{Speaker N}` → 256-dim speaker embedding vectors (unused for now).
+
+### Skipping un-transcribed recordings
+
+Recordings with `is_trans=false` (Plaud hasn't processed them yet) return empty
+transcripts. `process_short()` returns `"SKIP:not-yet-transcribed"` and cmd_sync
+leaves them in DISCOVERED state so the next sync retries — does NOT mark FAILED.
 
 ## State Machine
 
