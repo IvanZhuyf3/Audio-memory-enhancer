@@ -9,3 +9,4 @@ One entry per line: `- full term (ABBR)` or `- term without abbreviation`
 - full width at half maximum (FWHM)
 - Stokes beam
 - anti-Stokes shift
+- Prostheme

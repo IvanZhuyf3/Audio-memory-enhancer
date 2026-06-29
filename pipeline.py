@@ -411,6 +411,12 @@ def cmd_bootstrap_projects(args, cfg: dict) -> int:
 
 
 def cmd_reprocess(args, cfg: dict) -> int:
+    """Reset a recording to DISCOVERED so the next sync reprocesses it.
+
+    Does NOT delete the old note — for weekly raw files that would destroy
+    other clips' bullets, and for Meeting Notes the user may have edited.
+    Manually remove the old bullet/note if you want a clean re-render.
+    """
     plaud_id = args.id
     state_path = Path(cfg.get("state_file", "state.json"))
     state = state_mod.load_state(state_path)
@@ -418,20 +424,16 @@ def cmd_reprocess(args, cfg: dict) -> int:
     if not rec:
         print(f"[error] {plaud_id} not in state; run `sync --dry-run` first to discover it.")
         return 1
-    # Delete the existing vault note if present.
-    vault_rel = rec.get("vault_path")
-    if vault_rel:
-        note = _vault(cfg) / (vault_rel + ".md")
-        if note.exists():
-            note.unlink()
-            print(f"[reprocess] removed old note: {note}")
-    # Reset state so sync picks it up.
+    # Reset state so sync picks it up. Leave old note in place.
     rec["state"] = "DISCOVERED"
     rec["retries"] = 0
     rec.pop("vault_path", None)
     rec.pop("done_at", None)
     state_mod.save_state(state, state_path)
-    print(f"[reprocess] {plaud_id} reset to DISCOVERED. Run `sync --only {plaud_id}` next.")
+    print(f"[reprocess] {plaud_id} reset to DISCOVERED.")
+    if rec.get("vault_path"):
+        print(f"           old note left in place: {rec.get('vault_path')}  (edit/remove manually if needed)")
+    print(f"           Run `sync --only {plaud_id}` next.")
     return 0
 
 
