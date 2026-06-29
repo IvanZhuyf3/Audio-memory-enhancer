@@ -195,10 +195,26 @@ def process_long(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> st
         print(f"  [{plaud_id}] downloading audio...")
         plaud_sync.download_audio(plaud_id, audio_path)
 
-    # 2. Transcribe (GPU lock + ASR + diarization + AI clean).
+    # 2. Build ASR context (dictionary + project keywords + title) for pre-correction.
     state_mod.set_state(state, plaud_id, "TRANSCRIBING")
     secrets = load_secrets(cfg)
     tcfg = cfg["transcription"]
+    projects = routing.load_projects(cfg["projects_registry"])
+    # Pre-match project from title (full classification happens after transcription).
+    title_hint = classify._match_project_name(rec.get("filename", ""), projects)
+    project_keywords = []
+    if title_hint:
+        for p in projects:
+            if p["name"] == title_hint:
+                project_keywords = (p.get("keywords") or []) + (p.get("aliases") or [])
+                break
+    asr_context = transcribe_local.build_asr_context(
+        dictionary_path=project_root / "dictionary.md",
+        project_keywords=project_keywords,
+        recording_title=rec.get("filename"),
+    )
+
+    # 3. Transcribe (GPU lock + ASR + diarization + AI clean).
     result = transcribe_local.transcribe(
         audio_path,
         language=tcfg.get("language", "auto"),
@@ -212,6 +228,7 @@ def process_long(rec: dict, cfg: dict, state: dict, dry_run: bool = False) -> st
         gpu_lock=cfg.get("gpu_lock"),
         gpu_lock_timeout_s=cfg.get("gpu_lock_timeout_s", 3600),
         log_dir=cache_dir,
+        context=asr_context,
     )
 
     if not result["segments"]:

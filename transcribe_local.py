@@ -271,6 +271,7 @@ def _run_asr(
     forced_aligner: str = "Qwen/Qwen3-ForcedAligner-0.6B",
     device: str = "cuda",
     log_dir: Path | None = None,
+    context: str = "",
 ) -> tuple[list[dict], int, str]:
     """Run Qwen3-ASR + diarization. Returns (segments, speaker_count, language)."""
     import torch
@@ -320,6 +321,7 @@ def _run_asr(
             try:
                 chunk_result[0] = model.transcribe(
                     audio=(chunk_wav, sr),
+                    context=context,
                     language=lang_param,
                     return_time_stamps=True,
                 )
@@ -426,6 +428,64 @@ def load_dictionary(dictionary_path: Path) -> str:
     if not dictionary_path.exists():
         return ""
     return dictionary_path.read_text(encoding="utf-8").strip()
+
+
+def build_asr_context(
+    dictionary_path: str | Path | None = None,
+    project_keywords: list[str] | None = None,
+    recording_title: str | None = None,
+    max_chars: int = 500,
+) -> str:
+    """Build a Qwen3-ASR context string from dictionary terms + project keywords + title.
+
+    The context becomes the model's system message, biasing recognition toward
+    domain-specific terms BEFORE transcription (pre-correction). This complements
+    the post-correction DeepSeek ai_clean step — context prevents errors, ai_clean
+    catches the rest.
+
+    Dictionary format: one entry per line, `- full term (ABBR)` or `- term`.
+    Both the full form and abbreviation are extracted and included.
+    """
+    terms: list[str] = []
+
+    # 1. Dictionary terms (both full forms + abbreviations)
+    if dictionary_path:
+        p = Path(dictionary_path)
+        if p.exists():
+            for line in p.read_text(encoding="utf-8").split("\n"):
+                line = line.strip()
+                if not line.startswith("- "):
+                    continue
+                entry = line[2:].strip()
+                m = re.match(r"^(.+?)\s*\(([A-Z][A-Za-z0-9-]+)\)$", entry)
+                if m:
+                    terms.append(m.group(1).strip())  # full term
+                    terms.append(m.group(2).strip())  # abbreviation
+                else:
+                    terms.append(entry)
+
+    # 2. Project keywords + aliases (deduped, case-insensitive)
+    if project_keywords:
+        seen = {t.lower() for t in terms}
+        for kw in project_keywords:
+            kw = kw.strip()
+            if kw and kw.lower() not in seen:
+                terms.append(kw)
+                seen.add(kw.lower())
+
+    # 3. Recording title (names/topics from Plaud metadata)
+    if recording_title:
+        title = recording_title.strip()
+        if title and len(title) < 100:
+            terms.append(title)
+
+    if not terms:
+        return ""
+
+    context = "Domain-specific terms that may appear in this audio: " + ", ".join(terms)
+    if len(context) > max_chars:
+        context = context[:max_chars].rsplit(", ", 1)[0]
+    return context
 
 
 def ai_clean(
@@ -577,13 +637,21 @@ def transcribe(
     gpu_lock_timeout_s: float = 3600.0,
     log_dir: str | Path | None = None,
     skip_clean: bool = False,
+    context: str = "",
 ) -> dict:
     """Transcribe a long recording with speaker diarization + optional AI cleaning.
+
+    The `context` string is passed to Qwen3-ASR's system message, biasing
+    recognition toward domain terms (pre-correction). Build it via
+    `build_asr_context()` from the dictionary + project keywords + title.
 
     Returns {segments, transcript_markdown, transcript_text, speakers, language}.
     """
     audio_path = Path(audio_path)
     dict_path = Path(dictionary_path) if dictionary_path else None
+
+    if context:
+        print(f"  ASR context: {context[:120]}{'...' if len(context) > 120 else ''}")
 
     # Acquire GPU lock for the whole ASR + diarization phase.
     lock = GpuLock(gpu_lock, timeout_s=gpu_lock_timeout_s) if gpu_lock else None
@@ -594,6 +662,7 @@ def transcribe(
             segments, speakers, detected_lang = _run_asr(
                 audio_path, hf_token, language, qwen_model, forced_aligner, device,
                 log_dir=Path(log_dir) if log_dir else None,
+                context=context,
             )
         finally:
             lock.release()
@@ -601,6 +670,7 @@ def transcribe(
         segments, speakers, detected_lang = _run_asr(
             audio_path, hf_token, language, qwen_model, forced_aligner, device,
             log_dir=Path(log_dir) if log_dir else None,
+            context=context,
         )
 
     if not segments:
