@@ -113,8 +113,26 @@ The `/file/detail/<id>` response `data` object contains:
 ### Skipping un-transcribed recordings
 
 Recordings with `is_trans=false` (Plaud hasn't processed them yet) return empty
-transcripts. `process_short()` returns `"SKIP:not-yet-transcribed"` and cmd_sync
-leaves them in DISCOVERED state so the next sync retries — does NOT mark FAILED.
+transcripts. `process_short()` auto-triggers cloud transcription via the
+captured endpoints and defers to the next sync.
+
+**Known limitation:** very short clips (<30s) may never get transcribed by Plaud
+even after triggering. Observed on a 26-second test clip: `tranConfig` was set
+(PATCH succeeded) but `content_list` stayed empty indefinitely. For these, the
+pipeline should eventually fall back to local Qwen3-ASR (future enhancement).
+
+### Plaud summary vs raw transcript
+
+For short recordings, `pre_download_content_list[0].data_content` contains:
+- **<1 min clips**: raw transcript with `[Speaker N]` tags (prefixed by a
+  Chinese preamble that `parse_transcript()` strips)
+- **~2 min clips**: full AI summary with markdown formatting (`##`, `**bold**`,
+  checkboxes) — NOT a raw transcript. This summary gets appended as a very long
+  bullet to the weekly raw file. The markdown formatting may render oddly inside
+  a bullet list. The raw transcript for these is available via
+  `content_list[0].data_link` (gzipped S3 JSON) but not currently fetched on
+  the short path. Acceptable tradeoff — the summary is useful content for the
+  digest pass, and the user can edit in Obsidian.
 
 ## State Machine
 
