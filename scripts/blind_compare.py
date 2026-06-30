@@ -362,14 +362,12 @@ def reveal(results_path: Path, reveal_key: list[dict]) -> int:
         b_src = key.get("B", "?")
 
         if choice == "TIE":
-            ties += 1
             winner = "tie"
         elif choice == "A":
             winner = a_src
         elif choice == "B":
             winner = b_src
         else:
-            ties += 1
             winner = "tie"
 
         if winner == "plaud":
