@@ -1,11 +1,3 @@
-# Domain Dictionary
-
-Extracted from "Stimulated Raman Photothermal Microscopy: Theory and Implementation" (review)
-and "Advanced vibrational microscopes for life science" (Nature Methods, 2025).
-
-One entry per line below: `- full term (ABBR)` or `- term`.
-Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
-
 - 1,7-Octadiyne
 - 96-well plate
 - acousto-optic modulator (AOM)
@@ -27,8 +19,8 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - azido photothermal probe
 - azido-trehalose
 - azobenzene thiol
-- balanced detection
 - ball lens model
+- balanced detection
 - bandpass filter
 - beating frequency
 - benzoyl peroxide (BPO)
@@ -44,6 +36,7 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - C-D bond
 - C-H stretching vibration
 - C=C vibration
+- C≡C bond
 - Caenorhabditis elegans
 - calcium fluoride (CaF₂)
 - carbamazepine dehydrate
@@ -61,7 +54,6 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - cholesterol-rich membrane domains
 - click chemistry
 - click-free imaging
-- co-propagating geometry
 - coherent anti-Stokes Raman scattering (CARS)
 - coherent Raman scattering (CRS)
 - collinear alignment
@@ -72,11 +64,11 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - continuous-wave (CW) laser
 - contrast mechanism
 - convolutional neural network (CNN)
+- co-propagating geometry
 - counter-propagating geometry
-- cross-correlation function
 - cross-phase modulation (XPM)
+- cross-correlation function
 - cytoplasm
-- C≡C bond
 - dark-field scattering
 - data acquisition card (DAQ)
 - delay line
@@ -110,9 +102,9 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - fatty acid (FA)
 - femtosecond laser
 - fiber laser
-- fingerprint region
 - finite-difference time-domain (FDTD) model
 - finite-element model
+- fingerprint region
 - fluorescence thermometers
 - fluorescence-detected mid-infrared photothermal (F-MIP)
 - fluorescence-encoded infrared (FEIR)
@@ -152,8 +144,8 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - intravascular photoacoustic imaging
 - inverse centimeter (cm⁻¹)
 - inverted microscope
-- k-means clustering
 - Kerr lensing
+- k-means clustering
 - Kramers-Kronig
 - label-free imaging
 - laser frequency comb
@@ -178,8 +170,8 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - MIA PaCa-2 cell line
 - micromolar
 - mid-infrared (mid-IR)
-- mid-infrared photoacoustic (MIPA)
 - mid-infrared photothermal (MIP) microscopy
+- mid-infrared photoacoustic (MIPA)
 - millimolar
 - mitochondria
 - model organisms
@@ -233,17 +225,17 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - phase matching
 - phasor analysis
 - photobleaching
-- photodamage
 - photodetector
 - photodiode (PD)
+- photodamage
 - photomultiplier tube (PMT)
 - photon flux
-- photoswitchable probes
 - photothermal (PT)
 - photothermal background
 - photothermal heterodyne imaging
 - photothermal relaxation localization microscopy
 - photothermal spectroscopy
+- photoswitchable probes
 - picosecond laser
 - pixel dwell time
 - Planck constant
@@ -258,9 +250,9 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - pseudo continuous wave
 - pump beam
 - pump-probe
+- quarter-wave plate
 - quantum cascade laser (QCL)
 - quantum-enhanced SRS
-- quarter-wave plate
 - radial segmentation
 - radially segmented balanced detection
 - Raman dye
@@ -275,17 +267,17 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - relaxation
 - repetition rate
 - resonant scanner
-- Rhodamine 800 (Rh800)
 - Rhodamine B
+- Rhodamine 800 (Rh800)
 - RNA interference (RNAi)
 - root-mean-square (RMS) noise
 - saturation excitation
 - scanning mirror (SM)
 - second-harmonic generation (SHG)
 - second-harmonic generation (SHG) crystal
+- shot noise
 - shortwave infrared (SWIR)
 - shortwave infrared photothermal (SWIP)
-- shot noise
 - signal-to-background ratio (SBR)
 - signal-to-noise ratio (SNR)
 - silent window
@@ -343,12 +335,12 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - up-conversion of mid-infrared absorption
 - urea
 - varicella-zoster virus
-- vibration-resonant sum frequency generation (VR-SFG)
 - vibrational absorption
 - vibrational coherence
 - vibrational microscopy
 - vibrational photothermal (VIP) microscopy
 - vibrational relaxation
+- vibration-resonant sum frequency generation (VR-SFG)
 - video-rate imaging
 - virtual state (VS)
 - visible (vis)

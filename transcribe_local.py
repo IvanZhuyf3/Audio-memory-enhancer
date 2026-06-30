@@ -434,7 +434,7 @@ def build_asr_context(
     dictionary_path: str | Path | None = None,
     project_keywords: list[str] | None = None,
     recording_title: str | None = None,
-    max_chars: int = 500,
+    max_chars: int = 15000,
 ) -> str:
     """Build a Qwen3-ASR context string from dictionary terms + project keywords + title.
 
