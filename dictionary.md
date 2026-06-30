@@ -6,357 +6,360 @@ and "Advanced vibrational microscopes for life science" (Nature Methods, 2025).
 One entry per line below: `- full term (ABBR)` or `- term`.
 Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 
-- 1,7-Octadiyne
-- 96-well plate
+- 1,7-Octadiyne | 1,7-辛二炔
+- 96-well plate | 96孔板
 - acousto-optic modulator (AOM)
-- adaptive optics
-- air condenser
-- alkyne
-- alkyne-labeled polymeric nanoparticles
-- amide I band
-- amide II band
-- amyloid-beta
-- anti-Stokes Raman scattering
-- apparent cross section
-- arrayed detector
+- adaptive optics | 自适应光学
+- air condenser | 空气聚光器
+- alkyne | 炔烃
+- alkyne-labeled polymeric nanoparticles | 炔烃标记聚合物纳米粒子
+- amide I band | 酰胺I带
+- amide II band | 酰胺II带
+- amyloid-beta | β-淀粉样蛋白
+- anti-Stokes Raman scattering | 反斯托克斯拉曼散射
+- apparent cross section | 表观截面
+- arrayed detector | 阵列探测器
 - atomic force stimulated Raman microscopy (AFM-SRS)
-- auto-balanced detection
+- auto-balanced detection | 自动平衡检测
 - avalanche photodiode (APD)
-- axial offset
-- azide
-- azido photothermal probe
-- azido-trehalose
-- azobenzene thiol
-- balanced detection
-- ball lens model
-- bandpass filter
-- beating frequency
+- axial offset | 轴向偏移
+- azide | 叠氮化物
+- azido photothermal probe | 叠氮光热探针
+- azido-trehalose | 叠氮海藻糖
+- azobenzene thiol | 偶氮苯硫醇
+- balanced detection | 平衡检测
+- ball lens model | 球透镜模型
+- bandpass filter | 带通滤光片
+- beating frequency | 拍频
 - benzoyl peroxide (BPO)
-- Bessel beam
-- bio-compatible
-- bio-orthogonal
-- blood-brain barrier
-- BM4D denoising
-- bond-selective imaging
-- boxcar detection
-- broadband CARS
-- bulk solvent
-- C-D bond
-- C-H stretching vibration
-- C=C vibration
-- Caenorhabditis elegans
-- calcium fluoride (CaF₂)
-- carbamazepine dehydrate
+- Bessel beam | 贝塞尔光束
+- bio-compatible | 生物相容的
+- bio-orthogonal | 生物正交的
+- blood-brain barrier | 血脑屏障
+- BM4D denoising | BM4D去噪
+- bond-selective imaging | 键选择性成像
+- boxcar detection | 箱车检测
+- broadband CARS | 宽带相干反斯托克斯拉曼散射
+- bulk solvent | 本体溶剂
+- C-D bond | 碳-氘键
+- C-H stretching vibration | 碳-氢伸缩振动
+- C=C vibration | 碳-碳双键振动
+- Caenorhabditis elegans | 秀丽隐杆线虫
+- calcium fluoride (CaF₂) | 氟化钙
+- carbamazepine dehydrate | 卡马西平二水合物
 - carbon-deuterium (C-D)
 - carbon-hydrogen (C-H)
-- carbonyl
-- Carnot limit
-- caveolin immunofluorescence
-- cell cycle
-- chemical bond vibration
-- chemical imaging
-- chirped pulses
-- chirping
-- cholesterol
-- cholesterol-rich membrane domains
-- click chemistry
-- click-free imaging
-- co-propagating geometry
+- carbonyl | 羰基
+- Carnot limit | 卡诺极限
+- caveolin immunofluorescence | 穴样内陷免疫荧光
+- cell cycle | 细胞周期
+- chemical bond vibration | 化学键振动
+- chemical imaging | 化学成像
+- chirped pulses | 啁啾脉冲
+- chirping | 啁啾
+- cholesterol | 胆固醇
+- cholesterol-rich membrane domains | 富含胆固醇的膜结构域
+- click chemistry | 点击化学
+- click-free imaging | 无点击成像
+- co-propagating geometry | 共传播几何
 - coherent anti-Stokes Raman scattering (CARS)
 - coherent Raman scattering (CRS)
-- collinear alignment
-- collinear balanced detection
-- complementary metal-oxide-semiconductor (CMOS) camera
-- condenser lens
-- confocal Raman microscopy
-- continuous-wave (CW) laser
-- contrast mechanism
+- collinear alignment | 共线对准
+- collinear balanced detection | 共线平衡检测
+- complementary metal-oxide-semiconductor (CMOS) camera | 互补金属氧化物半导体相机
+- condenser lens | 聚光镜
+- confocal Raman microscopy | 共聚焦拉曼显微镜
+- continuous-wave (CW) laser | 连续波激光器
+- contrast mechanism | 对比机制
 - convolutional neural network (CNN)
-- counter-propagating geometry
-- cross-correlation function
+- counter-propagating geometry | 反向传播几何
+- cross-correlation function | 互相关函数
 - cross-phase modulation (XPM)
-- cytoplasm
-- C≡C bond
-- dark-field scattering
+- cytoplasm | 细胞质
+- C≡C bond | 碳-碳三键
+- dark-field scattering | 暗场散射
 - data acquisition card (DAQ)
-- delay line
-- demodulation
-- denoising
-- depth-resolved imaging
-- deuterated DMSO (DMSO-d₆)
-- deuterated glycerol (glycerol-d₈)
-- deuterated palmitic acid (PA-d₃₁)
-- deuterated water (D₂O)
-- deuterium-labeled
+- delay line | 延迟线
+- demodulation | 解调
+- denoising | 去噪
+- depth-resolved imaging | 深度分辨成像
+- deuterated DMSO (DMSO-d₆) | 氘代二甲基亚砜
+- deuterated glycerol (glycerol-d₈) | 氘代甘油
+- deuterated palmitic acid (PA-d₃₁) | 氘代棕榈酸
+- deuterated water (D₂O) | 重水
+- deuterium-labeled | 氘标记的
 - dichroic mirror (DM)
-- differential frequency
-- diffraction limit
-- digitizer
+- differential frequency | 差频
+- diffraction limit | 衍射极限
+- digitizer | 数字化仪
 - dimethyl sulfoxide (DMSO)
-- dispersion compensation
-- Drosophila melanogaster
-- dual-output picosecond tunable fiber laser
-- duty cycle
-- dwell time
-- electric field detector
-- electronic pre-resonance
-- energy deposition
-- epi-detected
-- epi-fluorescence microscopy
-- epi-photothermal detection
-- extracellular matrix
+- dispersion compensation | 色散补偿
+- Drosophila melanogaster | 黑腹果蝇
+- dual-output picosecond tunable fiber laser | 双输出皮秒可调谐光纤激光器
+- duty cycle | 占空比
+- dwell time | 驻留时间
+- electric field detector | 电场探测器
+- electronic pre-resonance | 电子预共振
+- energy deposition | 能量沉积
+- epi-detected | 反向检测
+- epi-fluorescence microscopy | 落射荧光显微镜
+- epi-photothermal detection | 反向光热检测
+- extracellular matrix | 细胞外基质
 - fast Fourier transform (FFT)
-- fast-tuning fiber laser
+- fast-tuning fiber laser | 快速调谐光纤激光器
 - fatty acid (FA)
-- femtosecond laser
-- fiber laser
-- fingerprint region
-- finite-difference time-domain (FDTD) model
-- finite-element model
-- fluorescence thermometers
+- femtosecond laser | 飞秒激光器
+- fiber laser | 光纤激光器
+- fingerprint region | 指纹区
+- finite-difference time-domain (FDTD) model | 时域有限差分模型
+- finite-element model | 有限元模型
+- fluorescence thermometers | 荧光温度计
 - fluorescence-detected mid-infrared photothermal (F-MIP)
 - fluorescence-encoded infrared (FEIR)
-- fluorescence-encoded spontaneous emission
-- focal volume
-- focusing optics
-- Fourier transform
-- Fourier-domain mode-locked laser
-- Fourier-transform CARS
-- Fourier-transform infrared (FT-IR) spectroscopy
+- fluorescence-encoded spontaneous emission | 荧光编码自发发射
+- focal volume | 焦体积
+- focusing optics | 聚焦光学元件
+- Fourier transform | 傅里叶变换
+- Fourier-domain mode-locked laser | 傅里叶域锁模激光器
+- Fourier-transform CARS | 傅里叶变换相干反斯托克斯拉曼散射
+- Fourier-transform infrared (FT-IR) spectroscopy | 傅里叶变换红外光谱
 - full width at half maximum (FWHM)
-- function generator
-- galvo scanning unit
-- Gaussian beam
-- glioblastoma
-- glycerol
-- glycerol-d₈
-- grating
+- function generator | 函数发生器
+- galvo scanning unit | 振镜扫描单元
+- Gaussian beam | 高斯光束
+- glioblastoma | 胶质母细胞瘤
+- glycerol | 甘油
+- glycerol-d₈ | 氘代甘油-d₈
+- grating | 光栅
 - ground state (GS)
 - halfwave plate (HWP)
-- heat capacity
-- HeLa cell
-- hematoxylin and eosin (H&E) staining
-- heterodyne detection
-- high numerical aperture (high NA)
-- high-pass filter
-- high-speed data acquisition card
-- hyperspectral imaging
-- impulsive stimulated Raman scattering (iSRS)
-- induced pluripotent stem (iPS) cells
+- heat capacity | 热容
+- HeLa cell | HeLa细胞
+- hematoxylin and eosin (H&E) staining | 苏木精和伊红染色
+- heterodyne detection | 外差检测
+- high numerical aperture (high NA) | 高数值孔径
+- high-pass filter | 高通滤波器
+- high-speed data acquisition card | 高速数据采集卡
+- hyperspectral imaging | 高光谱成像
+- impulsive stimulated Raman scattering (iSRS) | 脉冲受激拉曼散射
+- induced pluripotent stem (iPS) cells | 诱导多能干细胞
 - infrared (IR)
-- infrared absorption
-- infrared-encoded spontaneous emission
-- instantaneous heating
-- interferometric scattering (iScat)
-- intraoperative diagnosis
-- intravascular photoacoustic imaging
-- inverse centimeter (cm⁻¹)
-- inverted microscope
-- k-means clustering
-- Kerr lensing
-- Kramers-Kronig
-- label-free imaging
-- laser frequency comb
-- lateral resolution
+- infrared absorption | 红外吸收
+- infrared-encoded spontaneous emission | 红外编码自发发射
+- instantaneous heating | 瞬时加热
+- interferometric scattering (iScat) | 干涉散射
+- intraoperative diagnosis | 术中诊断
+- intravascular photoacoustic imaging | 血管内光声成像
+- inverse centimeter (cm⁻¹) | 波数（厘米⁻¹）
+- inverted microscope | 倒置显微镜
+- k-means clustering | k均值聚类
+- Kerr lensing | 克尔透镜效应
+- Kramers-Kronig | 克拉默斯-克勒尼希
+- label-free imaging | 无标记成像
+- laser frequency comb | 激光频率梳
+- lateral resolution | 横向分辨率
 - least absolute shrinkage and selection operator (LASSO)
 - limit of detection (LoD)
-- linear absorption
-- lipid droplet
+- linear absorption | 线性吸收
+- lipid droplet | 脂滴
 - lipid ester (LE)
-- lipid metabolism
-- lipid oxidation
-- live-cell imaging
-- lock-in amplifier
-- long working distance
-- low-noise amplifier
-- machine learning
-- mammalian cells
-- matched filtering
-- membrane domains
-- meta-lens
-- metabolism
-- MIA PaCa-2 cell line
-- micromolar
-- mid-infrared (mid-IR)
+- lipid metabolism | 脂质代谢
+- lipid oxidation | 脂质氧化
+- live-cell imaging | 活细胞成像
+- lock-in amplifier | 锁相放大器
+- long working distance | 长工作距离
+- low-noise amplifier | 低噪声放大器
+- machine learning | 机器学习
+- mammalian cells | 哺乳动物细胞
+- matched filtering | 匹配滤波
+- membrane domains | 膜结构域
+- meta-lens | 超透镜
+- metabolism | 代谢
+- MIA PaCa-2 cell line | MIA PaCa-2细胞系
+- micromolar | 微摩尔级
+- mid-infrared (mid-IR) | 中红外
 - mid-infrared photoacoustic (MIPA)
-- mid-infrared photothermal (MIP) microscopy
-- millimolar
-- mitochondria
-- model organisms
-- modulation depth
-- modulation transfer
-- modulation-free single-pulse approach
-- molecular vibration
-- motorized delay stage
-- mouse brain
-- multi-well plate
-- multiplex CARS
-- multivariate curve resolution (MCR) analysis
-- myelin sheath
-- nanomedicines
-- nanoparticles
+- mid-infrared photothermal (MIP) microscopy | 中红外光热显微镜
+- millimolar | 毫摩尔级
+- mitochondria | 线粒体
+- model organisms | 模式生物
+- modulation depth | 调制深度
+- modulation transfer | 调制传递
+- modulation-free single-pulse approach | 无调制单脉冲方法
+- molecular vibration | 分子振动
+- motorized delay stage | 电动延迟台
+- mouse brain | 小鼠大脑
+- multi-well plate | 多孔板
+- multiplex CARS | 多重相干反斯托克斯拉曼散射
+- multivariate curve resolution (MCR) analysis | 多元曲线分辨分析
+- myelin sheath | 髓鞘
+- nanomedicines | 纳米药物
+- nanoparticles | 纳米粒子
 - near-infrared (NIR)
-- neurodegenerative diseases
-- NIDAQ card
-- nitrile
-- non-centrosymmetric
-- non-invasive
-- non-parametric interaction
-- non-resonant background
-- nonlinear absorption
-- nonlinear susceptibility
-- nuclear membrane
-- nucleolus
+- neurodegenerative diseases | 神经退行性疾病
+- NIDAQ card | NIDAQ卡
+- nitrile | 腈
+- non-centrosymmetric | 非中心对称的
+- non-invasive | 无创的
+- non-parametric interaction | 非参量相互作用
+- non-resonant background | 非共振背景
+- nonlinear absorption | 非线性吸收
+- nonlinear susceptibility | 非线性磁化率
+- nuclear membrane | 核膜
+- nucleolus | 核仁
 - numerical aperture (NA)
-- objective lens
-- oblique photothermal microscopy
-- oil condenser
+- objective lens | 物镜
+- oblique photothermal microscopy | 斜入射光热显微镜
+- oil condenser | 油聚光器
 - optical coherence tomography (OCT)
-- optical diffraction tomography
-- optical Kerr effect
+- optical diffraction tomography | 光学衍射层析成像
+- optical Kerr effect | 光学克尔效应
 - optical parametric amplifier (OPA)
 - optical parametric oscillator (OPO)
 - optical photothermal infrared (O-PTIR)
-- organelle maps
+- organelle maps | 细胞器图谱
 - osteosarcoma cancer cells (SJSA-1)
-- OVCAR-5 cancer tissue
-- overtone absorption
+- OVCAR-5 cancer tissue | OVCAR-5癌组织
+- overtone absorption | 泛频吸收
 - overtone photoacoustic (OPA)
-- overtone photothermal (OPT) microscopy
-- pancreatic cancer
-- parabolic mirror
-- paraxial approximation
-- patient-derived xenograft
-- peak power
-- penetration depth
-- phase contrast microscope
-- phase matching
-- phasor analysis
-- photobleaching
-- photodamage
-- photodetector
+- overtone photothermal (OPT) microscopy | 泛频光热显微镜
+- pancreatic cancer | 胰腺癌
+- parabolic mirror | 抛物面镜
+- paraxial approximation | 傍轴近似
+- patient-derived xenograft | 患者来源的异种移植
+- peak power | 峰值功率
+- penetration depth | 穿透深度
+- phase contrast microscope | 相差显微镜
+- phase matching | 相位匹配
+- phasor analysis | 相量分析
+- photobleaching | 光漂白
+- photodamage | 光损伤
+- photodetector | 光电探测器
 - photodiode (PD)
 - photomultiplier tube (PMT)
-- photon flux
-- photoswitchable probes
+- photon flux | 光子通量
+- photoswitchable probes | 光开关探针
 - photothermal (PT)
-- photothermal background
-- photothermal heterodyne imaging
-- photothermal relaxation localization microscopy
-- photothermal spectroscopy
-- picosecond laser
-- pixel dwell time
-- Planck constant
-- plasmon-enhanced SRS
+- photothermal background | 光热背景
+- photothermal heterodyne imaging | 光热外差成像
+- photothermal relaxation localization microscopy | 光热弛豫定位显微镜
+- photothermal spectroscopy | 光热光谱学
+- picosecond laser | 皮秒激光器
+- pixel dwell time | 像素驻留时间
+- Planck constant | 普朗克常数
+- plasmon-enhanced SRS | 等离激元增强受激拉曼散射
 - point spread function (PSF)
 - polarizing beam splitter (PBS)
-- polygon mirror
-- pre-resonance
+- polygon mirror | 多面镜
+- pre-resonance | 预共振
 - principal component analysis (PCA)
-- probe beam
-- protein secondary structure
-- pseudo continuous wave
-- pump beam
-- pump-probe
+- probe beam | 探测光束
+- protein secondary structure | 蛋白质二级结构
+- pseudo continuous wave | 准连续波
+- pump beam | 泵浦光束
+- pump-probe | 泵浦-探测
 - quantum cascade laser (QCL)
-- quantum-enhanced SRS
-- quarter-wave plate
-- radial segmentation
-- radially segmented balanced detection
-- Raman dye
-- Raman scattering
-- Raman shift
-- Raman signature
-- Raman-active
-- Rayleigh length
-- reflective objective
-- refractive index
+- quantum-enhanced SRS | 量子增强受激拉曼散射
+- quarter-wave plate | 四分之一波片
+- radial segmentation | 径向分割
+- radially segmented balanced detection | 径向分割平衡检测
+- Raman dye | 拉曼染料
+- Raman scattering | 拉曼散射
+- Raman shift | 拉曼位移
+- Raman signature | 拉曼特征
+- Raman-active | 拉曼活性的
+- Rayleigh length | 瑞利长度
+- reflective objective | 反射物镜
+- refractive index | 折射率
 - relative intensity noise (RIN)
-- relaxation
-- repetition rate
-- resonant scanner
+- relaxation | 弛豫
+- repetition rate | 重复频率
+- resonant scanner | 共振扫描仪
 - Rhodamine 800 (Rh800)
-- Rhodamine B
+- Rhodamine B | 罗丹明B
 - RNA interference (RNAi)
-- root-mean-square (RMS) noise
-- saturation excitation
+- root-mean-square (RMS) noise | 均方根噪声
+- saturation excitation | 饱和激发
 - scanning mirror (SM)
 - second-harmonic generation (SHG)
-- second-harmonic generation (SHG) crystal
+- second-harmonic generation (SHG) crystal | 二次谐波产生晶体
 - shortwave infrared (SWIR)
 - shortwave infrared photothermal (SWIP)
-- shot noise
+- shot noise | 散粒噪声
 - signal-to-background ratio (SBR)
 - signal-to-noise ratio (SNR)
-- silent window
-- silicon photodiode
-- single-pulse configuration (spSRP)
-- single-virus metabolic profiling
-- SKOV3 cell
-- solid-state laser
-- spatial resolution
-- spectral fidelity
-- spectral focusing
-- spectral multiplexing
-- spectral phasor analysis
-- spectral unmixing
-- spectrometer
-- spontaneous Raman scattering
+- silent window | 沉默窗口
+- silicon photodiode | 硅光电二极管
+- single-pulse configuration (spSRP) | 单脉冲配置
+- single-virus metabolic profiling | 单病毒代谢谱分析
+- SKOV3 cell | SKOV3细胞
+- solid-state laser | 固态激光器
+- spatial resolution | 空间分辨率
+- spectral fidelity | 光谱保真度
+- spectral focusing | 光谱聚焦
+- spectral multiplexing | 光谱复用
+- spectral phasor analysis | 光谱相量分析
+- spectral unmixing | 光谱解混
+- spectrometer | 光谱仪
+- spontaneous Raman scattering | 自发拉曼散射
 - stimulated Raman gain (SRG)
-- stimulated Raman histology
+- stimulated Raman histology | 受激拉曼组织学
 - stimulated Raman loss (SRL)
-- stimulated Raman photoacoustic (SRPA) microscopy
-- stimulated Raman photothermal (SRP) microscopy
+- stimulated Raman photoacoustic (SRPA) microscopy | 受激拉曼光声显微镜
+- stimulated Raman photothermal (SRP) microscopy | 受激拉曼光热显微镜
 - stimulated Raman scattering (SRS)
-- Stokes beam
-- stress confinement time
+- Stokes beam | 斯托克斯光束
+- stress confinement time | 应力约束时间
 - sum frequency generation (SFG)
-- super-multiplex imaging
-- super-resolution microscopy
-- susceptibility
-- T24 cancer cell
-- temporal coherence
-- thermal ball lens
-- thermal confinement time
-- thermal diffusion
-- thermal expansion
-- thermal lens
-- thermal lensing
-- thermo-optic coefficient
-- thermo-optic effect
-- thermophoresis
-- third-order susceptibility
-- three-beam copropagating
-- tissue clearing
-- tomography
-- transdermal delivery
+- super-multiplex imaging | 超多重成像
+- super-resolution microscopy | 超分辨显微镜
+- susceptibility | 磁化率
+- T24 cancer cell | T24癌细胞
+- temporal coherence | 时间相干性
+- thermal ball lens | 热球透镜
+- thermal confinement time | 热约束时间
+- thermal diffusion | 热扩散
+- thermal expansion | 热膨胀
+- thermal lens | 热透镜
+- thermal lensing | 热透镜效应
+- thermo-optic coefficient | 热光系数
+- thermo-optic effect | 热光效应
+- thermophoresis | 热泳
+- third-order susceptibility | 三阶磁化率
+- three-beam copropagating | 三光束共传播
+- tissue clearing | 组织透明化
+- tomography | 层析成像
+- transdermal delivery | 经皮给药
 - transient absorption (TA)
-- transistor-transistor logic (TTL) trigger
-- trehalose
-- tunable fiber laser
-- two-photon absorption
-- two-photon excitation
-- two-photon fluorescence
-- ultrafast laser
-- ultrasonic transducer
+- transistor-transistor logic (TTL) trigger | 晶体管-晶体管逻辑触发器
+- trehalose | 海藻糖
+- tunable fiber laser | 可调谐光纤激光器
+- two-photon absorption | 双光子吸收
+- two-photon excitation | 双光子激发
+- two-photon fluorescence | 双光子荧光
+- ultrafast laser | 超快激光器
+- ultrasonic transducer | 超声换能器
 - ultraviolet (UV)
-- up-conversion of mid-infrared absorption
-- urea
-- varicella-zoster virus
+- up-conversion of mid-infrared absorption | 中红外吸收上转换
+- urea | 尿素
+- varicella-zoster virus | 水痘-带状疱疹病毒
 - vibration-resonant sum frequency generation (VR-SFG)
-- vibrational absorption
-- vibrational coherence
-- vibrational microscopy
-- vibrational photothermal (VIP) microscopy
-- vibrational relaxation
-- video-rate imaging
+- vibrational absorption | 振动吸收
+- vibrational coherence | 振动相干性
+- vibrational microscopy | 振动显微镜
+- vibrational photothermal (VIP) microscopy | 振动光热显微镜
+- vibrational relaxation | 振动弛豫
+- video-rate imaging | 视频速率成像
 - virtual state (VS)
-- visible (vis)
-- volumetric imaging
-- wavenumber
-- Whittaker smoother
-- widefield imaging
-- working distance
-- z-scan
-- z-sectioning
-- zebrafish embryos
+- visible (vis) | 可见光
+- volumetric imaging | 体积成像
+- wavenumber | 波数
+- Whittaker smoother | 惠特克平滑器
+- widefield imaging | 宽场成像
+- working distance | 工作距离
+- z-scan | z扫描
+- z-sectioning | z层切
+- zebrafish embryos | 斑马鱼胚胎
+
+
+

@@ -457,12 +457,19 @@ def build_asr_context(
                 if not line.startswith("- "):
                     continue
                 entry = line[2:].strip()
-                m = re.match(r"^(.+?)\s*\(([A-Z][A-Za-z0-9-]+)\)$", entry)
-                if m:
-                    terms.append(m.group(1).strip())  # full term
-                    terms.append(m.group(2).strip())  # abbreviation
-                else:
-                    terms.append(entry)
+                # Bilingual entries use " | " separator:
+                #   "- lipid droplet | 脂滴"
+                # Each part is processed independently for abbreviations.
+                for part in entry.split(" | "):
+                    part = part.strip()
+                    if not part:
+                        continue
+                    m = re.match(r"^(.+?)\s*\(([A-Z][A-Za-z0-9-]+)\)$", part)
+                    if m:
+                        terms.append(m.group(1).strip())  # full term
+                        terms.append(m.group(2).strip())  # abbreviation
+                    else:
+                        terms.append(part)
 
     # 2. Project keywords + aliases (deduped, case-insensitive)
     if project_keywords:

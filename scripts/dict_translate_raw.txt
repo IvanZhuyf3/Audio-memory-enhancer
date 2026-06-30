@@ -1,0 +1,297 @@
+1. 1,7-Octadiyne || 1,7-辛二炔
+2. 96-well plate || 96孔板
+3. adaptive optics || 自适应光学
+4. air condenser || 空气聚光器
+5. alkyne || 炔烃
+6. alkyne-labeled polymeric nanoparticles || 炔烃标记聚合物纳米粒子
+7. amide I band || 酰胺I带
+8. amide II band || 酰胺II带
+9. amyloid-beta || β-淀粉样蛋白
+10. anti-Stokes Raman scattering || 反斯托克斯拉曼散射
+11. apparent cross section || 表观截面
+12. arrayed detector || 阵列探测器
+13. auto-balanced detection || 自动平衡检测
+14. axial offset || 轴向偏移
+15. azide || 叠氮化物
+16. azido photothermal probe || 叠氮光热探针
+17. azido-trehalose || 叠氮海藻糖
+18. azobenzene thiol || 偶氮苯硫醇
+19. balanced detection || 平衡检测
+20. ball lens model || 球透镜模型
+21. bandpass filter || 带通滤光片
+22. beating frequency || 拍频
+23. Bessel beam || 贝塞尔光束
+24. bio-compatible || 生物相容的
+25. bio-orthogonal || 生物正交的
+26. blood-brain barrier || 血脑屏障
+27. BM4D denoising || BM4D去噪
+28. bond-selective imaging || 键选择性成像
+29. boxcar detection || 箱车检测
+30. broadband CARS || 宽带相干反斯托克斯拉曼散射
+31. bulk solvent || 本体溶剂
+32. C-D bond || 碳-氘键
+33. C-H stretching vibration || 碳-氢伸缩振动
+34. C=C vibration || 碳-碳双键振动
+35. Caenorhabditis elegans || 秀丽隐杆线虫
+36. calcium fluoride (CaF₂) || 氟化钙
+37. carbamazepine dehydrate || 卡马西平二水合物
+38. carbonyl || 羰基
+39. Carnot limit || 卡诺极限
+40. caveolin immunofluorescence || 穴样内陷免疫荧光
+41. cell cycle || 细胞周期
+42. chemical bond vibration || 化学键振动
+43. chemical imaging || 化学成像
+44. chirped pulses || 啁啾脉冲
+45. chirping || 啁啾
+46. cholesterol || 胆固醇
+47. cholesterol-rich membrane domains || 富含胆固醇的膜结构域
+48. click chemistry || 点击化学
+49. click-free imaging || 无点击成像
+50. co-propagating geometry || 共传播几何
+51. collinear alignment || 共线对准
+52. collinear balanced detection || 共线平衡检测
+53. complementary metal-oxide-semiconductor (CMOS) camera || 互补金属氧化物半导体相机
+54. condenser lens || 聚光镜
+55. confocal Raman microscopy || 共聚焦拉曼显微镜
+56. continuous-wave (CW) laser || 连续波激光器
+57. contrast mechanism || 对比机制
+58. counter-propagating geometry || 反向传播几何
+59. cross-correlation function || 互相关函数
+60. cytoplasm || 细胞质
+61. C≡C bond || 碳-碳三键
+62. dark-field scattering || 暗场散射
+63. delay line || 延迟线
+64. demodulation || 解调
+65. denoising || 去噪
+66. depth-resolved imaging || 深度分辨成像
+67. deuterated DMSO (DMSO-d₆) || 氘代二甲基亚砜
+68. deuterated glycerol (glycerol-d₈) || 氘代甘油
+69. deuterated palmitic acid (PA-d₃₁) || 氘代棕榈酸
+70. deuterated water (D₂O) || 重水
+71. deuterium-labeled || 氘标记的
+72. differential frequency || 差频
+73. diffraction limit || 衍射极限
+74. digitizer || 数字化仪
+75. dispersion compensation || 色散补偿
+76. Drosophila melanogaster || 黑腹果蝇
+77. dual-output picosecond tunable fiber laser || 双输出皮秒可调谐光纤激光器
+78. duty cycle || 占空比
+79. dwell time || 驻留时间
+80. electric field detector || 电场探测器
+81. electronic pre-resonance || 电子预共振
+82. energy deposition || 能量沉积
+83. epi-detected || 反向检测
+84. epi-fluorescence microscopy || 落射荧光显微镜
+85. epi-photothermal detection || 反向光热检测
+86. extracellular matrix || 细胞外基质
+87. fast-tuning fiber laser || 快速调谐光纤激光器
+88. femtosecond laser || 飞秒激光器
+89. fiber laser || 光纤激光器
+90. fingerprint region || 指纹区
+91. finite-difference time-domain (FDTD) model || 时域有限差分模型
+92. finite-element model || 有限元模型
+93. fluorescence thermometers || 荧光温度计
+94. fluorescence-encoded spontaneous emission || 荧光编码自发发射
+95. focal volume || 焦体积
+96. focusing optics || 聚焦光学元件
+97. Fourier transform || 傅里叶变换
+98. Fourier-domain mode-locked laser || 傅里叶域锁模激光器
+99. Fourier-transform CARS || 傅里叶变换相干反斯托克斯拉曼散射
+100. Fourier-transform infrared (FT-IR) spectroscopy || 傅里叶变换红外光谱
+101. function generator || 函数发生器
+102. galvo scanning unit || 振镜扫描单元
+103. Gaussian beam || 高斯光束
+104. glioblastoma || 胶质母细胞瘤
+105. glycerol || 甘油
+106. glycerol-d₈ || 氘代甘油-d₈
+107. grating || 光栅
+108. heat capacity || 热容
+109. HeLa cell || HeLa细胞
+110. hematoxylin and eosin (H&E) staining || 苏木精和伊红染色
+111. heterodyne detection || 外差检测
+112. high numerical aperture (high NA) || 高数值孔径
+113. high-pass filter || 高通滤波器
+114. high-speed data acquisition card || 高速数据采集卡
+115. hyperspectral imaging || 高光谱成像
+116. impulsive stimulated Raman scattering (iSRS) || 脉冲受激拉曼散射
+117. induced pluripotent stem (iPS) cells || 诱导多能干细胞
+118. infrared absorption || 红外吸收
+119. infrared-encoded spontaneous emission || 红外编码自发发射
+120. instantaneous heating || 瞬时加热
+121. interferometric scattering (iScat) || 干涉散射
+122. intraoperative diagnosis || 术中诊断
+123. intravascular photoacoustic imaging || 血管内光声成像
+124. inverse centimeter (cm⁻¹) || 波数（厘米⁻¹）
+125. inverted microscope || 倒置显微镜
+126. k-means clustering || k均值聚类
+127. Kerr lensing || 克尔透镜效应
+128. Kramers-Kronig || 克拉默斯-克勒尼希
+129. label-free imaging || 无标记成像
+130. laser frequency comb || 激光频率梳
+131. lateral resolution || 横向分辨率
+132. linear absorption || 线性吸收
+133. lipid droplet || 脂滴
+134. lipid metabolism || 脂质代谢
+135. lipid oxidation || 脂质氧化
+136. live-cell imaging || 活细胞成像
+137. lock-in amplifier || 锁相放大器
+138. long working distance || 长工作距离
+139. low-noise amplifier || 低噪声放大器
+140. machine learning || 机器学习
+141. mammalian cells || 哺乳动物细胞
+142. matched filtering || 匹配滤波
+143. membrane domains || 膜结构域
+144. meta-lens || 超透镜
+145. metabolism || 代谢
+146. MIA PaCa-2 cell line || MIA PaCa-2细胞系
+147. micromolar || 微摩尔级
+148. mid-infrared (mid-IR) || 中红外
+149. mid-infrared photothermal (MIP) microscopy || 中红外光热显微镜
+150. millimolar || 毫摩尔级
+151. mitochondria || 线粒体
+152. model organisms || 模式生物
+153. modulation depth || 调制深度
+154. modulation transfer || 调制传递
+155. modulation-free single-pulse approach || 无调制单脉冲方法
+156. molecular vibration || 分子振动
+157. motorized delay stage || 电动延迟台
+158. mouse brain || 小鼠大脑
+159. multi-well plate || 多孔板
+160. multiplex CARS || 多重相干反斯托克斯拉曼散射
+161. multivariate curve resolution (MCR) analysis || 多元曲线分辨分析
+162. myelin sheath || 髓鞘
+163. nanomedicines || 纳米药物
+164. nanoparticles || 纳米粒子
+165. neurodegenerative diseases || 神经退行性疾病
+166. NIDAQ card || NIDAQ卡
+167. nitrile || 腈
+168. non-centrosymmetric || 非中心对称的
+169. non-invasive || 无创的
+170. non-parametric interaction || 非参量相互作用
+171. non-resonant background || 非共振背景
+172. nonlinear absorption || 非线性吸收
+173. nonlinear susceptibility || 非线性磁化率
+174. nuclear membrane || 核膜
+175. nucleolus || 核仁
+176. objective lens || 物镜
+177. oblique photothermal microscopy || 斜入射光热显微镜
+178. oil condenser || 油聚光器
+179. optical diffraction tomography || 光学衍射层析成像
+180. optical Kerr effect || 光学克尔效应
+181. organelle maps || 细胞器图谱
+182. OVCAR-5 cancer tissue || OVCAR-5癌组织
+183. overtone absorption || 泛频吸收
+184. overtone photothermal (OPT) microscopy || 泛频光热显微镜
+185. pancreatic cancer || 胰腺癌
+186. parabolic mirror || 抛物面镜
+187. paraxial approximation || 傍轴近似
+188. patient-derived xenograft || 患者来源的异种移植
+189. peak power || 峰值功率
+190. penetration depth || 穿透深度
+191. phase contrast microscope || 相差显微镜
+192. phase matching || 相位匹配
+193. phasor analysis || 相量分析
+194. photobleaching || 光漂白
+195. photodamage || 光损伤
+196. photodetector || 光电探测器
+197. photon flux || 光子通量
+198. photoswitchable probes || 光开关探针
+199. photothermal background || 光热背景
+200. photothermal heterodyne imaging || 光热外差成像
+201. photothermal relaxation localization microscopy || 光热弛豫定位显微镜
+202. photothermal spectroscopy || 光热光谱学
+203. picosecond laser || 皮秒激光器
+204. pixel dwell time || 像素驻留时间
+205. Planck constant || 普朗克常数
+206. plasmon-enhanced SRS || 等离激元增强受激拉曼散射
+207. polygon mirror || 多面镜
+208. pre-resonance || 预共振
+209. probe beam || 探测光束
+210. protein secondary structure || 蛋白质二级结构
+211. pseudo continuous wave || 准连续波
+212. pump beam || 泵浦光束
+213. pump-probe || 泵浦-探测
+214. quantum-enhanced SRS || 量子增强受激拉曼散射
+215. quarter-wave plate || 四分之一波片
+216. radial segmentation || 径向分割
+217. radially segmented balanced detection || 径向分割平衡检测
+218. Raman dye || 拉曼染料
+219. Raman scattering || 拉曼散射
+220. Raman shift || 拉曼位移
+221. Raman signature || 拉曼特征
+222. Raman-active || 拉曼活性的
+223. Rayleigh length || 瑞利长度
+224. reflective objective || 反射物镜
+225. refractive index || 折射率
+226. relaxation || 弛豫
+227. repetition rate || 重复频率
+228. resonant scanner || 共振扫描仪
+229. Rhodamine B || 罗丹明B
+230. root-mean-square (RMS) noise || 均方根噪声
+231. saturation excitation || 饱和激发
+232. second-harmonic generation (SHG) crystal || 二次谐波产生晶体
+233. shot noise || 散粒噪声
+234. silent window || 沉默窗口
+235. silicon photodiode || 硅光电二极管
+236. single-pulse configuration (spSRP) || 单脉冲配置
+237. single-virus metabolic profiling || 单病毒代谢谱分析
+238. SKOV3 cell || SKOV3细胞
+239. solid-state laser || 固态激光器
+240. spatial resolution || 空间分辨率
+241. spectral fidelity || 光谱保真度
+242. spectral focusing || 光谱聚焦
+243. spectral multiplexing || 光谱复用
+244. spectral phasor analysis || 光谱相量分析
+245. spectral unmixing || 光谱解混
+246. spectrometer || 光谱仪
+247. spontaneous Raman scattering || 自发拉曼散射
+248. stimulated Raman histology || 受激拉曼组织学
+249. stimulated Raman photoacoustic (SRPA) microscopy || 受激拉曼光声显微镜
+250. stimulated Raman photothermal (SRP) microscopy || 受激拉曼光热显微镜
+251. Stokes beam || 斯托克斯光束
+252. stress confinement time || 应力约束时间
+253. super-multiplex imaging || 超多重成像
+254. super-resolution microscopy || 超分辨显微镜
+255. susceptibility || 磁化率
+256. T24 cancer cell || T24癌细胞
+257. temporal coherence || 时间相干性
+258. thermal ball lens || 热球透镜
+259. thermal confinement time || 热约束时间
+260. thermal diffusion || 热扩散
+261. thermal expansion || 热膨胀
+262. thermal lens || 热透镜
+263. thermal lensing || 热透镜效应
+264. thermo-optic coefficient || 热光系数
+265. thermo-optic effect || 热光效应
+266. thermophoresis || 热泳
+267. third-order susceptibility || 三阶磁化率
+268. three-beam copropagating || 三光束共传播
+269. tissue clearing || 组织透明化
+270. tomography || 层析成像
+271. transdermal delivery || 经皮给药
+272. transistor-transistor logic (TTL) trigger || 晶体管-晶体管逻辑触发器
+273. trehalose || 海藻糖
+274. tunable fiber laser || 可调谐光纤激光器
+275. two-photon absorption || 双光子吸收
+276. two-photon excitation || 双光子激发
+277. two-photon fluorescence || 双光子荧光
+278. ultrafast laser || 超快激光器
+279. ultrasonic transducer || 超声换能器
+280. up-conversion of mid-infrared absorption || 中红外吸收上转换
+281. urea || 尿素
+282. varicella-zoster virus || 水痘-带状疱疹病毒
+283. vibrational absorption || 振动吸收
+284. vibrational coherence || 振动相干性
+285. vibrational microscopy || 振动显微镜
+286. vibrational photothermal (VIP) microscopy || 振动光热显微镜
+287. vibrational relaxation || 振动弛豫
+288. video-rate imaging || 视频速率成像
+289. visible (vis) || 可见光
+290. volumetric imaging || 体积成像
+291. wavenumber || 波数
+292. Whittaker smoother || 惠特克平滑器
+293. widefield imaging || 宽场成像
+294. working distance || 工作距离
+295. z-scan || z扫描
+296. z-sectioning || z层切
+297. zebrafish embryos || 斑马鱼胚胎
