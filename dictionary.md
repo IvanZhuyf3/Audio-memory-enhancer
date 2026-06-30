@@ -33,8 +33,8 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - beating frequency | 拍频
 - benzoyl peroxide (BPO)
 - Bessel beam | 贝塞尔光束
-- bio-compatible | 生物相容的
-- bio-orthogonal | 生物正交的
+- bio-compatible | 生物相容
+- bio-orthogonal | 生物正交
 - blood-brain barrier | 血脑屏障
 - BM4D denoising | BM4D去噪
 - bond-selective imaging | 键选择性成像
@@ -46,12 +46,11 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - C=C vibration | 碳-碳双键振动
 - Caenorhabditis elegans | 秀丽隐杆线虫
 - calcium fluoride (CaF₂) | 氟化钙
-- carbamazepine dehydrate | 卡马西平二水合物
 - carbon-deuterium (C-D)
 - carbon-hydrogen (C-H)
 - carbonyl | 羰基
 - Carnot limit | 卡诺极限
-- caveolin immunofluorescence | 穴样内陷免疫荧光
+- caveolin  | 小窝蛋白
 - cell cycle | 细胞周期
 - chemical bond vibration | 化学键振动
 - chemical imaging | 化学成像
@@ -61,7 +60,7 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - cholesterol-rich membrane domains | 富含胆固醇的膜结构域
 - click chemistry | 点击化学
 - click-free imaging | 无点击成像
-- co-propagating geometry | 共传播几何
+- co-propagating geometry | 共传播构型
 - coherent anti-Stokes Raman scattering (CARS)
 - coherent Raman scattering (CRS)
 - collinear alignment | 共线对准
@@ -142,6 +141,7 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - high-speed data acquisition card | 高速数据采集卡
 - hyperspectral imaging | 高光谱成像
 - impulsive stimulated Raman scattering (iSRS) | 脉冲受激拉曼散射
+- immunofluorescence | 免疫荧光
 - induced pluripotent stem (iPS) cells | 诱导多能干细胞
 - infrared (IR)
 - infrared absorption | 红外吸收
@@ -313,7 +313,7 @@ Used by build_asr_context() to bias Qwen3-ASR toward correct domain spellings.
 - sum frequency generation (SFG)
 - super-multiplex imaging | 超多重成像
 - super-resolution microscopy | 超分辨显微镜
-- susceptibility | 磁化率
+- susceptibility | 易感性
 - T24 cancer cell | T24癌细胞
 - temporal coherence | 时间相干性
 - thermal ball lens | 热球透镜
