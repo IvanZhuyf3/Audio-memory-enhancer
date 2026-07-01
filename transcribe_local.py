@@ -407,7 +407,33 @@ def _run_asr(
         for turn, _, speaker in diarization.speaker_diarization.itertracks(yield_label=True):
             speaker_turns.append((turn.start, turn.end, speaker))
         n_speakers = len(set(s for _, _, s in speaker_turns))
-        print(f"  Found {n_speakers} speaker(s)")
+        print(f"  Detected {n_speakers} speaker(s)")
+
+        # Try voiceprint matching against registry.
+        try:
+            import speaker_id as sid
+            embed_model = sid.load_embedding_model(hf_token, device)
+            embeds_by_speaker = sid.extract_speaker_embeddings(
+                wav, sr, speaker_turns, embed_model,
+            )
+            registry = sid.load_registry()
+            name_map = sid.identify_speakers(embeds_by_speaker, registry)
+            # Accumulate embeddings for future matching.
+            sid.accumulate_embeddings(embeds_by_speaker, name_map, registry)
+            sid.save_registry(registry)
+            # Remap speaker labels.
+            new_turns = []
+            for start, end, label in speaker_turns:
+                new_turns.append((start, end, name_map.get(label, label)))
+            renamed = sum(1 for k, v in name_map.items() if v != k)
+            if renamed:
+                print(f"  Voiceprint matched {renamed} speaker(s):")
+                for old, new in sorted(name_map.items()):
+                    if old != new:
+                        print(f"    {old} → {new}")
+            speaker_turns = new_turns
+        except Exception as e:
+            print(f"  Voiceprint matching skipped: {e}")
         del diarize_pipeline
         gc.collect()
         if device == "cuda":
