@@ -500,11 +500,21 @@ def _mark_raw_done(
 
 
 def _atomic_write(path: Path, content: str) -> None:
+    import time
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(content, encoding="utf-8")
     import os
-    os.replace(tmp, path)
+    # Retry on Windows/OneDrive file locks (WinError 5)
+    for attempt in range(5):
+        try:
+            os.replace(tmp, path)
+            return
+        except PermissionError:
+            if attempt < 4:
+                time.sleep(1)
+            else:
+                raise
 
 
 def apply_decisions(
