@@ -3,7 +3,7 @@ projects:
   aliases: [单分子光热]
   keywords: [single molecule, photothermal, scattering, fluorescence, 单分子]
 - name: FT-SWIP
-  aliases: [SWIP, FACED, FT]
+  aliases: [SWIP, FT]
   keywords: [grating, spectral fidelity, chirping, pulse splitter, femtosecond]
 - name: OmniSRS
   aliases: []
