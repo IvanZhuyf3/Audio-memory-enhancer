@@ -276,12 +276,18 @@ def classify_entries(
         "   - \"merges_with\": 应与已有条目合并\n"
         "6. **related_title**: 如果 relation 不是 new，引用的已有条目标题（否则 null）\n"
         "7. **confidence**: 0.0-1.0（你对这个分类的把握）\n\n"
+        "**拆分规则**：一条录音可能包含多个不相关的意思（比如先说实验，中间转折聊到"
+        "另一个话题）。如果前后内容在主题、用途或生命周期上明显不同，拆成多条 "
+        "decision（相同的 index）。"
+        "但只有前后内容**真正独立**时才拆——对同一件事的补充说明、因果延伸、"
+        "细节展开都应合并为一条，不要过度拆分。\n\n"
         "现有 digest 内容（用于判断 relation）：\n"
         f"{digest_block}\n\n"
         "输出 STRICT JSON：\n"
         '{"decisions": [{"index": 0, "target_file": "...", "lifetime": "...", '
         '"title": "...", "content": "...", "relation": "...", '
-        '"related_title": null, "confidence": 0.9}]}'
+        '"related_title": null, "confidence": 0.9}]}\n'
+        "注意：同一个 index 可以出现多次（拆分），也可以不出现（被过滤）。"
     )
 
     user = f"以下 {len(entries)} 条有效备忘，请分类：\n\n{entry_block}"
@@ -527,18 +533,26 @@ def apply_decisions(
 ) -> dict:
     """Apply classification decisions to digest + raw files.
 
+    Supports 1:N split: multiple decisions with the same raw entry
+    (same (week_file, timestamp)) produce multiple digest entries but
+    only one raw checkbox mark. The mark uses the MIN confidence across
+    all splits of the same raw entry, so a low-confidence split prevents
+    the entry from being marked completely resolved.
+
     Returns report dict: {done, low_conf, skipped, details[]}
     """
     report = {"done": 0, "low_conf": 0, "skipped": 0, "details": []}
 
-    # Group raw updates by week file (batch writes per file)
-    raw_updates: dict[Path, list[tuple[str, str]]] = {}  # {path: [(timestamp, status)]}
+    # Track raw updates keyed by (week_path, timestamp) -> {status, confidence}
+    # so splits of the same entry use the worst (lowest) status.
+    raw_update_map: dict[tuple[str, str], dict] = {}
 
     for dec in decisions:
         entry = dec["original_entry"]
         ts = entry["timestamp_str"]
         week_path = Path(entry["week_file"])
         conf = dec["confidence"]
+        raw_key = (str(week_path), ts)
 
         if conf < low_threshold:
             # Low confidence — leave [ ], add to report
@@ -551,6 +565,9 @@ def apply_decisions(
                 "suggested_title": dec.get("title"),
                 "confidence": conf,
             })
+            # Track as lowest confidence for this raw entry
+            if raw_key not in raw_update_map or conf < raw_update_map[raw_key]["confidence"]:
+                raw_update_map[raw_key] = {"status": " ", "confidence": conf}
             continue
 
         # High or medium confidence — write to digest
@@ -578,10 +595,10 @@ def apply_decisions(
         if not dry_run:
             _atomic_write(target_path, new_content)
 
-        # Queue raw update
-        if week_path not in raw_updates:
-            raw_updates[week_path] = []
-        raw_updates[week_path].append((ts, status))
+        # Track status for this raw entry — use WORST (lowest) confidence
+        if raw_key not in raw_update_map or conf < raw_update_map[raw_key]["confidence"]:
+            # Update: still track confidence but derive status from it
+            raw_update_map[raw_key] = {"status": status, "confidence": conf}
 
         report["done"] += 1
         report["details"].append({
@@ -594,9 +611,16 @@ def apply_decisions(
             "confidence": conf,
         })
 
-    # Apply raw updates (batch per file)
+    # Apply raw updates (batch per file, deduplicated by raw_key)
     if not dry_run:
-        for week_path, updates in raw_updates.items():
+        # Group by week_path
+        by_file: dict[Path, list[tuple[str, str]]] = {}
+        for (wp, ts), info in raw_update_map.items():
+            p = Path(wp)
+            if p not in by_file:
+                by_file[p] = []
+            by_file[p].append((ts, info["status"]))
+        for week_path, updates in by_file.items():
             content = week_path.read_text(encoding="utf-8")
             for ts, status in updates:
                 content = _mark_raw_done(content, ts, status)
