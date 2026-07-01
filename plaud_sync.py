@@ -405,6 +405,34 @@ def trigger_transcription(
     )
 
 
+# ── Trash / delete ──────────────────────────────────────────────────
+
+def trash_recording(rec_id: str) -> dict:
+    """Move a recording to Plaud trash (recoverable via web app).
+
+    PATCH /file/<id> with is_trash=1. Trashed recordings are excluded
+    from list_recordings() but can be restored from the Plaud web app trash.
+    Returns the API response.
+    """
+    return _api_request(
+        f"/file/{rec_id}",
+        method="PATCH",
+        body=json.dumps({"is_trash": 1}),
+    )
+
+
+def restore_recording(rec_id: str) -> dict:
+    """Restore a recording from Plaud trash.
+
+    PATCH /file/<id> with is_trash=0.
+    """
+    return _api_request(
+        f"/file/{rec_id}",
+        method="PATCH",
+        body=json.dumps({"is_trash": 0}),
+    )
+
+
 # ── CLI smoke-test entry: python -m plaud_sync <list|info> ───────────
 
 if __name__ == "__main__":

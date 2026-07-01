@@ -629,6 +629,47 @@ def apply_decisions(
     return report
 
 
+def _auto_trash_invalid(invalid_entries: list[dict], state_file: str | None = None) -> int:
+    """Auto-trash garbage-filtered entries from Plaud cloud.
+
+    Matches raw timestamps to Plaud recording IDs via state.json,
+    then calls plaud_sync.trash_recording() for each.
+    Returns count of trashed recordings.
+    """
+    if not invalid_entries or not state_file:
+        return 0
+
+    import json as _json
+    import plaud_sync as _plaud
+
+    state_path = Path(state_file)
+    if not state_path.exists():
+        return 0
+
+    try:
+        state = _json.loads(state_path.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
+
+    recordings = state.get("recordings", {})
+    trashed = 0
+    for entry in invalid_entries:
+        ts = entry["timestamp_str"]  # "2026-06-30 13:41"
+        # Match by timestamp prefix against recorded_at in state
+        ts_prefix = ts[:16]  # "2026-06-30 13:41"
+        for plaud_id, rec in recordings.items():
+            recorded = rec.get("recorded_at", "")
+            if recorded.startswith(ts_prefix):
+                try:
+                    _plaud.trash_recording(plaud_id)
+                    trashed += 1
+                    print(f"  [trash] {plaud_id[:8]} → Plaud 回收站")
+                except Exception as e:
+                    print(f"  [trash] {plaud_id[:8]} 失败: {e}")
+                break
+    return trashed
+
+
 def apply_skips(
     invalid_entries: list[dict],
     dry_run: bool = False,
@@ -749,6 +790,12 @@ def run_digest(
     if invalid:
         print(f"[digest] 过滤 {len(invalid)} 条无效录音")
     skip_count = apply_skips(invalid, dry_run=dry_run)
+
+    # 3b. Auto-trash garbage recordings from Plaud cloud
+    if invalid and not dry_run:
+        trashed = _auto_trash_invalid(invalid, state_file=cfg.get("state_file"))
+        if trashed:
+            print(f"[digest] 自动删除 {trashed} 条废录音（Plaud 回收站）")
 
     if not valid:
         return format_report(
