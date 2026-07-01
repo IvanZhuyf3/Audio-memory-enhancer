@@ -1,4 +1,7 @@
 projects:
+- name: FT-SWIP
+  aliases: [SWIP, FACED, FT]
+  keywords: [grating, spectral fidelity, chirping, pulse splitter, femtosecond]
 - name: OmniSRS
   aliases: []
   keywords: []
