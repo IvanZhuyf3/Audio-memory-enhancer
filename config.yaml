@@ -15,7 +15,7 @@ plaud:
   token_refresh_buffer_days: 30
 
 vault:
-  root: C:/Users/Yifan/Documents/Obsidian/Yifan_Obsidian
+  root: C:/Users/Ivanz/Documents/Yifan_Obsidian
   meeting_notes_folder: Meeting Notes
   memo_raw_folder: Obsmem/raw        # short memos land here (intake)
   memo_digest_folder: Obsmem/digest  # Phase 5 (deferred)
@@ -42,7 +42,7 @@ llm:
   temperature_theme: 0.3
 
 # Source of secrets (read-only). Reuses the existing audio_transcribe_notes config.
-secrets_source: C:/Users/Yifan/OneDrive/Opencode_workspace/audio_transcribe_notes/config.ini
+secrets_source: C:/Users/Ivanz/OneDrive/Opencode_workspace/audio_transcribe_notes/config.ini
 
 # Project registry (hand-edited; bootstrap-projects command scans vault to refresh).
 projects_registry: projects.yaml

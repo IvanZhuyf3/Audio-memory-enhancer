@@ -464,8 +464,10 @@ def cmd_reprocess(args, cfg: dict) -> int:
 
 
 def cmd_digest(args, cfg: dict) -> int:
-    print("[digest] Phase 5 (deferred). Consolidates Obsmem/raw/ → Obsmem/digest/.")
-    print("         Not implemented yet. Memos accumulate in Obsmem/raw/ until then.")
+    """Consolidate unchecked raw memos into themed digest notes."""
+    import digest as digest_mod
+    report = digest_mod.run_digest(cfg, dry_run=args.dry_run)
+    print(report)
     return 0
 
 
@@ -507,7 +509,8 @@ def main(argv: list[str] | None = None) -> int:
     p_re.add_argument("id", help="Plaud recording ID.")
     p_re.set_defaults(func=cmd_reprocess)
 
-    p_dig = sub.add_parser("digest", help="(Phase 5) Consolidate raw memos into digest notes.")
+    p_dig = sub.add_parser("digest", help="Consolidate raw memos into digest notes.")
+    p_dig.add_argument("--dry-run", action="store_true", help="Show plan, write nothing.")
     p_dig.set_defaults(func=cmd_digest)
 
     args = parser.parse_args(argv)
